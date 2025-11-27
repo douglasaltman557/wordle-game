@@ -14,6 +14,14 @@
             margin: 0;
             padding: 0;
             overflow-x: hidden;
+            overflow-y: auto;
+            height: 100vh;
+            position: fixed;
+            width: 100%;
+        }
+        #root {
+            padding-bottom: 20px;
+            min-height: 100vh;
         }
         @keyframes fall {
             to { transform: translateY(100vh) rotate(360deg); }
@@ -307,7 +315,7 @@
             };
 
             return (
-                <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4">
+                <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4 pb-8 overflow-y-auto">
                     {winAnimation && (
                         <div className="fixed inset-0 pointer-events-none z-50">
                             {[...Array(30)].map((_, i) => (
