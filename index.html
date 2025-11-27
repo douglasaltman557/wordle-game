@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle Game</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .shake { animation: shake 0.5s; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Lucide Icons as SVG components
+        const Check = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        );
+
+        const Delete = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+                <line x1="18" y1="9" x2="12" y2="15"></line>
+                <line x1="12" y1="9" x2="18" y2="15"></line>
+            </svg>
+        );
+
+        const Trophy = ({ size = 24, className = '' }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+            </svg>
+        );
+
+        const Info = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+        );
+
+        const Settings = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 1v6m0 6v6"></path>
+                <path d="m1 12 6 0m6 0 6 0"></path>
+            </svg>
+        );
+
+        const Award = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="8" r="7"></circle>
+                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+            </svg>
+        );
+
+        const Zap = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+        );
+
+        const Star = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+        );
+
+        const WORD_LISTS = {
+            easy: ['BREAD', 'MOUSE', 'HOUSE', 'PLANT', 'BEACH', 'DREAM', 'LIGHT', 'PAINT', 'WATCH', 'SMART'],
+            medium: ['PLUSH', 'TRAIN', 'STONE', 'WORLD', 'CREAM', 'FRESH', 'GHOST', 'JOINT', 'NIGHT', 'QUEEN', 'ROUND', 'TRUST', 'YOUTH', 'SHARP'],
+            hard: ['JAZZY', 'FIZZY', 'FUZZY', 'DIZZY', 'PROXY', 'QUARTZ', 'RHYTHM', 'GLYPH', 'NYMPH', 'CRYPT']
+        };
+
+        function WordleGame() {
+            const [difficulty, setDifficulty] = useState('medium');
+            const [targetWord, setTargetWord] = useState('');
+            const [guesses, setGuesses] = useState([]);
+            const [currentGuess, setCurrentGuess] = useState('');
+            const [gameStatus, setGameStatus] = useState('playing');
+            const [showInstructions, setShowInstructions] = useState(false);
+            const [showSettings, setShowSettings] = useState(false);
+            const [showLeaderboard, setShowLeaderboard] = useState(false);
+            const [stats, setStats] = useState({ easy: { played: 0, won: 0, streak: 0 }, medium: { played: 0, won: 0, streak: 0 }, hard: { played: 0, won: 0, streak: 0 } });
+            const [leaderboard, setLeaderboard] = useState([]);
+            const [playerName, setPlayerName] = useState('');
+            const [showNameInput, setShowNameInput] = useState(false);
+            const [winAnimation, setWinAnimation] = useState(false);
+            const [shakeRow, setShakeRow] = useState(false);
+            const [points, setPoints] = useState(0);
+
+            useEffect(() => {
+                // Инициализация Telegram Web App
+                if (window.Telegram?.WebApp) {
+                    window.Telegram.WebApp.ready();
+                    window.Telegram.WebApp.expand();
+                }
+                loadGame();
+            }, []);
+
+            useEffect(() => {
+                if (targetWord === '') {
+                    selectNewWord();
+                }
+            }, [difficulty]);
+
+            const loadGame = () => {
+                const savedStats = localStorage.getItem('wordleStats');
+                if (savedStats) {
+                    setStats(JSON.parse(savedStats));
+                }
+
+                const savedName = localStorage.getItem('playerName');
+                if (savedName) {
+                    setPlayerName(savedName);
+                }
+
+                const savedLeaderboard = localStorage.getItem('leaderboard');
+                if (savedLeaderboard) {
+                    setLeaderboard(JSON.parse(savedLeaderboard));
+                }
+
+                selectNewWord();
+            };
+
+            const selectNewWord = () => {
+                const words = WORD_LISTS[difficulty];
+                const word = words[Math.floor(Math.random() * words.length)];
+                setTargetWord(word);
+            };
+
+            const saveStats = (newStats) => {
+                setStats(newStats);
+                localStorage.setItem('wordleStats', JSON.stringify(newStats));
+            };
+
+            const updateLeaderboard = (score) => {
+                if (!playerName) {
+                    setShowNameInput(true);
+                    return;
+                }
+
+                let currentLeaderboard = [...leaderboard];
+                
+                const existingIndex = currentLeaderboard.findIndex(entry => entry.name === playerName);
+                if (existingIndex >= 0) {
+                    if (score > currentLeaderboard[existingIndex].score) {
+                        currentLeaderboard[existingIndex].score = score;
+                        currentLeaderboard[existingIndex].difficulty = difficulty;
+                    }
+                } else {
+                    currentLeaderboard.push({ name: playerName, score, difficulty });
+                }
+
+                currentLeaderboard.sort((a, b) => b.score - a.score);
+                currentLeaderboard = currentLeaderboard.slice(0, 10);
+
+                localStorage.setItem('leaderboard', JSON.stringify(currentLeaderboard));
+                setLeaderboard(currentLeaderboard);
+            };
+
+            const saveName = () => {
+                if (playerName.trim()) {
+                    localStorage.setItem('playerName', playerName.trim());
+                    setShowNameInput(false);
+                    if (points > 0) {
+                        updateLeaderboard(points);
+                    }
+                }
+            };
+
+            const handleKeyPress = (key) => {
+                if (gameStatus !== 'playing') return;
+                
+                if (key === 'ENTER') {
+                    submitGuess();
+                } else if (key === 'BACK') {
+                    setCurrentGuess(prev => prev.slice(0, -1));
+                } else if (currentGuess.length < 5) {
+                    setCurrentGuess(prev => prev + key);
+                }
+            };
+
+            const calculatePoints = (attempts) => {
+                const basePoints = { easy: 100, medium: 200, hard: 300 };
+                const multiplier = 7 - attempts;
+                return basePoints[difficulty] * multiplier;
+            };
+
+            const submitGuess = () => {
+                if (currentGuess.length !== 5) {
+                    setShakeRow(true);
+                    setTimeout(() => setShakeRow(false), 500);
+                    return;
+                }
+                
+                const newGuesses = [...guesses, currentGuess];
+                setGuesses(newGuesses);
+                
+                if (currentGuess === targetWord) {
+                    setGameStatus('won');
+                    setWinAnimation(true);
+                    setTimeout(() => setWinAnimation(false), 2000);
+                    
+                    const earnedPoints = calculatePoints(newGuesses.length);
+                    setPoints(earnedPoints);
+                    
+                    const newStats = { ...stats };
+                    newStats[difficulty].played += 1;
+                    newStats[difficulty].won += 1;
+                    newStats[difficulty].streak += 1;
+                    saveStats(newStats);
+                    
+                    if (playerName) {
+                        updateLeaderboard(earnedPoints);
+                    } else {
+                        setShowNameInput(true);
+                    }
+                } else if (newGuesses.length === 6) {
+                    setGameStatus('lost');
+                    const newStats = { ...stats };
+                    newStats[difficulty].played += 1;
+                    newStats[difficulty].streak = 0;
+                    saveStats(newStats);
+                }
+                
+                setCurrentGuess('');
+            };
+
+            const resetGame = () => {
+                selectNewWord();
+                setGuesses([]);
+                setCurrentGuess('');
+                setGameStatus('playing');
+                setPoints(0);
+            };
+
+            const changeDifficulty = (newDifficulty) => {
+                setDifficulty(newDifficulty);
+                setShowSettings(false);
+                resetGame();
+            };
+
+            const getLetterStatus = (letter, index, word) => {
+                if (word[index] === targetWord[index]) return 'correct';
+                if (targetWord.includes(letter)) return 'present';
+                return 'absent';
+            };
+
+            const getKeyboardLetterStatus = (letter) => {
+                let status = 'unused';
+                guesses.forEach(guess => {
+                    guess.split('').forEach((l, i) => {
+                        if (l === letter) {
+                            if (targetWord[i] === letter) status = 'correct';
+                            else if (targetWord.includes(letter) && status !== 'correct') status = 'present';
+                            else if (status === 'unused') status = 'absent';
+                        }
+                    });
+                });
+                return status;
+            };
+
+            const keyboard = [
+                ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+                ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACK']
+            ];
+
+            const getDifficultyColor = (diff) => {
+                if (diff === 'easy') return 'text-green-400';
+                if (diff === 'medium') return 'text-yellow-400';
+                return 'text-red-400';
+            };
+
+            const getDifficultyIcon = (diff) => {
+                if (diff === 'easy') return <Star size={16} />;
+                if (diff === 'medium') return <Zap size={16} />;
+                return <Award size={16} />;
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4">
+                    {winAnimation && (
+                        <div className="fixed inset-0 pointer-events-none z-50">
+                            {[...Array(30)].map((_, i) => (
+                                <div
+                                    key={i}
+                                    className="absolute animate-bounce"
+                                    style={{
+                                        left: `${Math.random() * 100}%`,
+                                        top: `-20px`,
+                                        animation: `fall ${2 + Math.random() * 2}s linear`,
+                                        fontSize: '2rem'
+                                    }}
+                                >
+                                    {['🎉', '⭐', '🏆', '✨', '🎊'][Math.floor(Math.random() * 5)]}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="max-w-md mx-auto mb-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex gap-2">
+                                <button onClick={() => setShowInstructions(!showInstructions)} className="p-2 hover:bg-white/10 rounded-lg transition">
+                                    <Info size={24} />
+                                </button>
+                                <button onClick={() => setShowSettings(!showSettings)} className="p-2 hover:bg-white/10 rounded-lg transition">
+                                    <Settings size={24} />
+                                </button>
+                            </div>
+                            <h1 className="text-3xl font-bold">WORDLE</h1>
+                            <button onClick={() => setShowLeaderboard(!showLeaderboard)} className="p-2 hover:bg-white/10 rounded-lg transition">
+                                <Trophy size={24} className="text-yellow-400" />
+                            </button>
+                        </div>
+
+                        <div className="flex items-center justify-center gap-2 mb-4">
+                            <div className={`flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full ${getDifficultyColor(difficulty)}`}>
+                                {getDifficultyIcon(difficulty)}
+                                <span className="font-semibold capitalize">{difficulty}</span>
+                            </div>
+                            <div className="text-sm text-white/60">
+                                Streak: {stats[difficulty].streak} 🔥
+                            </div>
+                        </div>
+
+                        {showInstructions && (
+                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4 text-sm">
+                                <h3 className="font-bold mb-2 text-lg">📖 How to Play</h3>
+                                <ul className="space-y-1">
+                                    <li>• Guess the 5-letter word in 6 tries</li>
+                                    <li>• <span className="bg-blue-500 px-2 py-1 rounded">Blue</span> = correct letter, correct position</li>
+                                    <li>• <span className="bg-yellow-500 px-2 py-1 rounded text-black">Yellow</span> = correct letter, wrong position</li>
+                                    <li>• <span className="bg-gray-600 px-2 py-1 rounded">Gray</span> = letter not in word</li>
+                                </ul>
+                                <div className="mt-3 pt-3 border-t border-white/20">
+                                    <h4 className="font-bold mb-1">🎯 Scoring</h4>
+                                    <ul className="space-y-1 text-xs">
+                                        <li>• Easy: 100 pts × (7 - attempts)</li>
+                                        <li>• Medium: 200 pts × (7 - attempts)</li>
+                                        <li>• Hard: 300 pts × (7 - attempts)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+
+                        {showSettings && (
+                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4">
+                                <h3 className="font-bold mb-3 text-lg">⚙️ Settings</h3>
+                                <div className="space-y-2">
+                                    <p className="text-sm mb-2">Select Difficulty:</p>
+                                    {['easy', 'medium', 'hard'].map(diff => (
+                                        <button
+                                            key={diff}
+                                            onClick={() => changeDifficulty(diff)}
+                                            className={`w-full p-3 rounded-lg flex items-center justify-between transition ${
+                                                difficulty === diff ? 'bg-purple-600' : 'bg-white/5 hover:bg-white/10'
+                                            }`}
+                                        >
+                                            <span className="flex items-center gap-2">
+                                                {getDifficultyIcon(diff)}
+                                                <span className="capitalize font-semibold">{diff}</span>
+                                            </span>
+                                            <span className="text-xs text-white/60">
+                                                {stats[diff].won}/{stats[diff].played} wins
+                                            </span>
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="mt-4 pt-4 border-t border-white/20">
+                                    <button
+                                        onClick={() => setShowNameInput(true)}
+                                        className="w-full p-3 bg-white/5 hover:bg-white/10 rounded-lg transition"
+                                    >
+                                        {playerName ? `Change Name (${playerName})` : 'Set Player Name'}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {showLeaderboard && (
+                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4">
+                                <h3 className="font-bold mb-3 text-lg flex items-center gap-2">
+                                    <Trophy className="text-yellow-400" size={24} />
+                                    Leaderboard
+                                </h3>
+                                {leaderboard.length === 0 ? (
+                                    <p className="text-center text-white/60 py-4">No scores yet. Be the first!</p>
+                                ) : (
+                                    <div className="space-y-2">
+                                        {leaderboard.map((entry, index) => (
+                                            <div
+                                                key={index}
+                                                className={`flex items-center justify-between p-3 rounded-lg ${
+                                                    index === 0 ? 'bg-yellow-500/20 border border-yellow-500/40' :
+                                                    index === 1 ? 'bg-gray-300/20 border border-gray-300/40' :
+                                                    index === 2 ? 'bg-orange-600/20 border border-orange-600/40' :
+                                                    'bg-white/5'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-2xl">
+                                                        {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`}
+                                                    </span>
+                                                    <div>
+                                                        <div className="font-semibold">{entry.name}</div>
+                                                        <div className={`text-xs ${getDifficultyColor(entry.difficulty)}`}>
+                                                            {entry.difficulty}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-xl font-bold">{entry.score}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {showNameInput && (
+                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4">
+                                <h3 className="font-bold mb-3 text-lg">Enter Your Name</h3>
+                                <input
+                                    type="text"
+                                    value={playerName}
+                                    onChange={(e) => setPlayerName(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && saveName()}
+                                    placeholder="Your name"
+                                    className="w-full p-3 bg-white/10 border border-white/20 rounded-lg mb-3 text-white placeholder-white/40"
+                                    maxLength={20}
+                                />
+                                <div className="flex gap-2">
+                                    <button onClick={saveName} className="flex-1 bg-purple-600 hover:bg-purple-700 p-3 rounded-lg font-semibold transition">
+                                        Save
+                                    </button>
+                                    <button onClick={() => setShowNameInput(false)} className="px-4 bg-white/5 hover:bg-white/10 rounded-lg transition">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="max-w-md mx-auto mb-6">
+                        <div className="grid gap-2 mb-4">
+                            {[...Array(6)].map((_, rowIndex) => {
+                                const guess = guesses[rowIndex] || (rowIndex === guesses.length ? currentGuess : '');
+                                const isSubmitted = rowIndex < guesses.length;
+                                const isCurrentRow = rowIndex === guesses.length;
+                                
+                                return (
+                                    <div key={rowIndex} className={`grid grid-cols-5 gap-2 ${isCurrentRow && shakeRow ? 'shake' : ''}`}>
+                                        {[...Array(5)].map((_, colIndex) => {
+                                            const letter = guess[colIndex] || '';
+                                            const status = isSubmitted ? getLetterStatus(letter, colIndex, guess) : 'empty';
+                                            
+                                            return (
+                                                <div
+                                                    key={colIndex}
+                                                    className={`
+                                                        aspect-square flex items-center justify-center text-2xl font-bold rounded-lg border-2
+                                                        transition-all duration-300
+                                                        ${status === 'correct' ? 'bg-blue-500 border-blue-400 animate-pulse' : ''}
+                                                        ${status === 'present' ? 'bg-yellow-500 border-yellow-400' : ''}
+                                                        ${status === 'absent' ? 'bg-gray-600 border-gray-500' : ''}
+                                                        ${status === 'empty' ? 'bg-white/5 border-white/20' : ''}
+                                                        ${letter && !isSubmitted ? 'border-white/40 scale-105 bg-white/10' : ''}
+                                                    `}
+                                                >
+                                                    {letter}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {gameStatus !== 'playing' && (
+                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 mb-4 text-center">
+                                {gameStatus === 'won' ? (
+                                    <div>
+                                        <div className="text-6xl mb-3">🎉</div>
+                                        <h2 className="text-2xl font-bold text-green-400 mb-2">Amazing!</h2>
+                                        <p className="mb-2">You found the word in {guesses.length} tries!</p>
+                                        <div className="text-3xl font-bold text-yellow-400 mb-4">
+                                            +{points} points
+                                        </div>
+                                        {playerName && (
+                                            <p className="text-sm text-white/60 mb-4">Score saved to leaderboard!</p>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <div className="text-6xl mb-3">😢</div>
+                                        <h2 className="text-2xl font-bold text-red-400 mb-2">Game Over</h2>
+                                        <p>The word was:</p>
+                                        <p className="font-bold text-3xl mt-2 mb-4 text-yellow-400">{targetWord}</p>
+                                    </div>
+                                )}
+                                <button onClick={resetGame} className="mt-2 bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-lg font-semibold transition transform hover:scale-105">
+                                    Play Again
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="max-w-md mx-auto">
+                        {keyboard.map((row, rowIndex) => (
+                            <div key={rowIndex} className="flex justify-center gap-1 mb-2">
+                                {row.map(key => {
+                                    const status = key.length === 1 ? getKeyboardLetterStatus(key) : 'special';
+                                    
+                                    return (
+                                        <button
+                                            key={key}
+                                            onClick={() => handleKeyPress(key)}
+                                            disabled={gameStatus !== 'playing'}
+                                            className={`
+                                                px-3 py-4 rounded font-semibold transition-all transform active:scale-95
+                                                ${key === 'ENTER' || key === 'BACK' ? 'px-4 text-xs' : 'min-w-[2.5rem]'}
+                                                ${status === 'correct' ? 'bg-blue-500 shadow-lg shadow-blue-500/50' : ''}
+                                                ${status === 'present' ? 'bg-yellow-500 shadow-lg shadow-yellow-500/50' : ''}
+                                                ${status === 'absent' ? 'bg-gray-600' : ''}
+                                                ${status === 'unused' ? 'bg-slate-600 hover:bg-slate-500' : ''}
+                                                ${status === 'special' ? 'bg-slate-700 hover:bg-slate-600' : ''}
+                                                ${gameStatus !== 'playing' ? 'opacity-50 cursor-not-allowed' : ''}
+                                            `}
+                                        >
+                                            {key === 'BACK' ? <Delete size={20} /> : key === 'ENTER' ? <Check size={20} /> : key}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="max-w-md mx-auto mt-4 flex items-center justify-center gap-2 text-sm">
+                        <span>Attempts:</span>
+                        {[...Array(6)].map((_, i) => (
+                            <div key={i} className={`w-3 h-3 rounded-full transition-all ${i < guesses.length ? 'bg-red-500 scale-125' : 'bg-white/20'}`} />
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<WordleGame />);
+    </script>
+</body>
+</html>
