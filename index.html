@@ -59,10 +59,14 @@
             align-items: center;
             justify-content: center;
             font-size: 22px;
+            transition: all 0.2s;
+        }
+        
+        .header-btn:hover {
+            background: rgba(255,255,255,0.2);
         }
         
         .header-btn:active {
-            background: rgba(255,255,255,0.2);
             transform: scale(0.95);
         }
         
@@ -104,7 +108,6 @@
             gap: 8px;
         }
         
-        /* КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ */
         .cell {
             display: flex;
             align-items: center;
@@ -117,7 +120,6 @@
             transition: all 0.2s;
         }
         
-        /* Фиксированные размеры для каждого размера сетки */
         .grid.size-3 .cell { width: 72px; height: 72px; font-size: 32px; }
         .grid.size-4 .cell { width: 64px; height: 64px; font-size: 28px; }
         .grid.size-5 .cell { width: 56px; height: 56px; font-size: 24px; }
@@ -127,31 +129,39 @@
             border-color: rgba(255,255,255,0.6);
             background: rgba(255,255,255,0.15);
             transform: scale(1.05);
+            animation: pop 0.1s ease;
         }
         
         .cell.correct {
             background: #3b82f6;
             border-color: #60a5fa;
-            animation: flip 0.5s ease;
         }
         
         .cell.present {
             background: #eab308;
             border-color: #facc15;
             color: #000;
-            animation: flip 0.5s ease;
         }
         
         .cell.absent {
             background: #4b5563;
             border-color: #6b7280;
-            animation: flip 0.5s ease;
+        }
+        
+        .cell.reveal {
+            animation: flip 0.5s ease forwards;
         }
         
         @keyframes flip {
-            0% { transform: rotateX(0) scale(1); }
-            50% { transform: rotateX(90deg) scale(1.1); }
-            100% { transform: rotateX(0) scale(1); }
+            0% { transform: rotateX(0); }
+            50% { transform: rotateX(90deg); }
+            100% { transform: rotateX(0); }
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1.05); }
         }
         
         @keyframes shake {
@@ -162,8 +172,17 @@
             80% { transform: translateX(8px); }
         }
         
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
         .row.shake {
             animation: shake 0.4s ease;
+        }
+        
+        .cell.bounce {
+            animation: bounce 0.5s ease;
         }
         
         .keyboard {
@@ -199,7 +218,6 @@
         
         .key:active {
             transform: scale(0.95);
-            background: #475569;
         }
         
         .key.wide {
@@ -208,45 +226,48 @@
             font-size: 12px;
         }
         
-        .key.correct {
-            background: #3b82f6;
-        }
-        
-        .key.present {
-            background: #eab308;
-            color: #000;
-        }
-        
-        .key.absent {
-            background: #374151;
-        }
-        
-        .key:disabled {
-            opacity: 0.5;
-        }
+        .key.correct { background: #3b82f6; }
+        .key.present { background: #eab308; color: #000; }
+        .key.absent { background: #374151; }
+        .key:disabled { opacity: 0.5; cursor: not-allowed; }
         
         .message {
             position: fixed;
-            top: 70px;
+            top: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.9);
             color: white;
-            padding: 12px 24px;
-            border-radius: 10px;
+            padding: 14px 28px;
+            border-radius: 12px;
             font-weight: 600;
+            font-size: 16px;
             z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         
         .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 100;
             padding: 16px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
         }
         
         .modal-content {
@@ -256,11 +277,17 @@
             max-width: 360px;
             width: 100%;
             border: 1px solid rgba(255,255,255,0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.show .modal-content {
+            transform: scale(1);
         }
         
         .modal h2 {
             margin-bottom: 20px;
-            font-size: 22px;
+            font-size: 24px;
             text-align: center;
         }
         
@@ -272,27 +299,14 @@
             font-weight: 600;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 8px;
+            margin-top: 10px;
+            transition: all 0.2s;
         }
         
-        .btn:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #7c3aed, #6d28d9);
-            color: white;
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; }
+        .btn-success { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: white; }
         
         .result-panel {
             background: rgba(255,255,255,0.1);
@@ -302,64 +316,23 @@
             margin: 20px auto;
             max-width: 350px;
             border: 1px solid rgba(255,255,255,0.1);
+            display: none;
         }
         
-        .result-emoji {
-            font-size: 72px;
-            margin-bottom: 16px;
-        }
+        .result-panel.show { display: block; animation: fadeIn 0.5s ease; }
         
-        .result-title {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        
+        .result-emoji { font-size: 72px; margin-bottom: 16px; }
+        .result-title { font-size: 28px; font-weight: bold; margin-bottom: 8px; }
         .result-title.won { color: #4ade80; }
         .result-title.lost { color: #f87171; }
+        .result-word { font-size: 36px; font-weight: bold; color: #facc15; margin: 16px 0; letter-spacing: 4px; }
+        .result-points { font-size: 28px; font-weight: bold; color: #facc15; margin: 12px 0; }
+        .result-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .result-buttons .btn { flex: 1; margin: 0; }
         
-        .result-word {
-            font-size: 36px;
-            font-weight: bold;
-            color: #facc15;
-            margin: 16px 0;
-            letter-spacing: 4px;
-        }
-        
-        .result-points {
-            font-size: 32px;
-            font-weight: bold;
-            color: #facc15;
-            margin: 16px 0;
-        }
-        
-        .result-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .result-buttons .btn {
-            flex: 1;
-            margin: 0;
-        }
-        
-        .settings-group {
-            margin-bottom: 20px;
-        }
-        
-        .settings-label {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: rgba(255,255,255,0.7);
-        }
-        
-        .settings-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
+        .settings-group { margin-bottom: 20px; }
+        .settings-label { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: rgba(255,255,255,0.7); }
+        .settings-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         
         .settings-btn {
             padding: 14px 8px;
@@ -370,6 +343,7 @@
             cursor: pointer;
             background: rgba(255,255,255,0.05);
             color: white;
+            transition: all 0.2s;
         }
         
         .settings-btn.active {
@@ -377,11 +351,7 @@
             border-color: #7c3aed;
         }
         
-        .diff-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .diff-buttons { display: flex; flex-direction: column; gap: 8px; }
         
         .diff-btn {
             padding: 16px;
@@ -394,6 +364,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.2s;
         }
         
         .diff-btn.active {
@@ -401,10 +372,7 @@
             border-color: #7c3aed;
         }
         
-        .diff-btn .stats { 
-            font-size: 13px; 
-            opacity: 0.6; 
-        }
+        .diff-btn .stats { font-size: 13px; opacity: 0.6; }
         
         .attempts {
             display: flex;
@@ -416,26 +384,18 @@
             color: rgba(255,255,255,0.6);
         }
         
-        .attempts-dots {
-            display: flex;
-            gap: 8px;
-        }
+        .attempts-dots { display: flex; gap: 8px; }
         
         .attempt-dot {
             width: 14px;
             height: 14px;
             border-radius: 50%;
             background: rgba(255,255,255,0.2);
+            transition: all 0.3s;
         }
         
-        .attempt-dot.used {
-            background: #ef4444;
-        }
-        
-        .attempt-dot.won {
-            background: #22c55e;
-            transform: scale(1.3);
-        }
+        .attempt-dot.used { background: #ef4444; }
+        .attempt-dot.won { background: #22c55e; transform: scale(1.3); }
         
         .instructions {
             background: rgba(255,255,255,0.1);
@@ -443,21 +403,13 @@
             padding: 20px;
             margin: 0 auto 20px;
             max-width: 400px;
+            display: none;
         }
         
-        .instructions h3 {
-            margin-bottom: 16px;
-            font-size: 20px;
-        }
-        
-        .instructions ul {
-            list-style: none;
-        }
-        
-        .instructions li {
-            margin-bottom: 12px;
-            font-size: 15px;
-        }
+        .instructions.show { display: block; animation: fadeIn 0.3s ease; }
+        .instructions h3 { margin-bottom: 16px; font-size: 20px; }
+        .instructions ul { list-style: none; }
+        .instructions li { margin-bottom: 12px; font-size: 15px; }
         
         .color-sample {
             display: inline-block;
@@ -471,18 +423,35 @@
         .color-sample.yellow { background: #eab308; color: #000; }
         .color-sample.gray { background: #4b5563; }
         
-        .hidden { display: none !important; }
+        /* Leaderboard */
+        .leaderboard { margin-top: 20px; }
+        .leaderboard h3 { margin-bottom: 12px; font-size: 18px; }
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .leaderboard-item.gold { background: rgba(234, 179, 8, 0.2); border: 1px solid #eab308; }
+        .leaderboard-item.silver { background: rgba(192, 192, 192, 0.2); border: 1px solid #c0c0c0; }
+        .leaderboard-item.bronze { background: rgba(205, 127, 50, 0.2); border: 1px solid #cd7f32; }
+        .leaderboard-rank { font-size: 20px; margin-right: 12px; }
+        .leaderboard-name { flex: 1; font-weight: 600; }
+        .leaderboard-score { font-weight: bold; color: #facc15; }
     </style>
 </head>
 <body>
     <div id="app">
         <div class="header">
             <div style="display: flex; gap: 8px;">
-                <button class="header-btn" id="helpBtn">💡</button>
-                <button class="header-btn" id="settingsBtn">⚙️</button>
+                <button class="header-btn" id="helpBtn" type="button">💡</button>
+                <button class="header-btn" id="settingsBtn" type="button">⚙️</button>
             </div>
             <h1>WORDLE</h1>
-            <button class="header-btn" id="statsBtn">🏆</button>
+            <button class="header-btn" id="leaderboardBtn" type="button">🏆</button>
         </div>
         
         <div class="game-info">
@@ -491,30 +460,30 @@
             <span class="info-badge" id="streakBadge">🔥 0</span>
         </div>
         
-        <div class="instructions hidden" id="instructions">
+        <div class="instructions" id="instructions">
             <h3>💡 How to Play</h3>
             <ul>
                 <li>• Guess the word in 6 tries</li>
-                <li>• <span class="color-sample blue">Blue</span> = correct position</li>
-                <li>• <span class="color-sample yellow">Yellow</span> = wrong position</li>
-                <li>• <span class="color-sample gray">Gray</span> = not in word</li>
+                <li>• <span class="color-sample blue">Blue</span> = correct letter & position</li>
+                <li>• <span class="color-sample yellow">Yellow</span> = correct letter, wrong spot</li>
+                <li>• <span class="color-sample gray">Gray</span> = letter not in word</li>
             </ul>
-            <button class="btn btn-secondary" onclick="toggleInstructions()">Got it! 👍</button>
+            <button class="btn btn-secondary" id="closeInstructionsBtn" type="button">Got it! 👍</button>
         </div>
         
         <div class="grid-container">
             <div class="grid" id="grid"></div>
         </div>
         
-        <div class="result-panel hidden" id="resultPanel">
+        <div class="result-panel" id="resultPanel">
             <div class="result-emoji" id="resultEmoji">🎉</div>
             <div class="result-title" id="resultTitle">Amazing!</div>
             <p id="resultText">You found the word!</p>
-            <div class="result-word hidden" id="resultWord"></div>
+            <div class="result-word" id="resultWord" style="display:none;"></div>
             <div class="result-points" id="resultPoints"></div>
             <div class="result-buttons">
-                <button class="btn btn-success" onclick="shareResult()">📤 Share</button>
-                <button class="btn btn-primary" onclick="resetGame()">🔄 Play Again</button>
+                <button class="btn btn-success" id="shareBtn" type="button">📤 Share</button>
+                <button class="btn btn-primary" id="playAgainBtn" type="button">🔄 Play Again</button>
             </div>
         </div>
         
@@ -526,7 +495,8 @@
         </div>
     </div>
     
-    <div class="modal hidden" id="settingsModal">
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
         <div class="modal-content">
             <h2>⚙️ Settings</h2>
             <div class="settings-group">
@@ -537,13 +507,23 @@
                 <div class="settings-label">Difficulty</div>
                 <div class="diff-buttons" id="diffButtons"></div>
             </div>
-            <button class="btn btn-primary" onclick="closeSettings()">Done ✓</button>
+            <button class="btn btn-primary" id="closeSettingsBtn" type="button">Done ✓</button>
         </div>
     </div>
     
-    <div class="message hidden" id="message"></div>
+    <!-- Leaderboard Modal -->
+    <div class="modal" id="leaderboardModal">
+        <div class="modal-content">
+            <h2>🏆 Leaderboard</h2>
+            <div class="leaderboard" id="leaderboardList"></div>
+            <button class="btn btn-primary" id="closeLeaderboardBtn" type="button">Close</button>
+        </div>
+    </div>
+    
+    <div class="message" id="message" style="display:none;"></div>
 
     <script>
+        // ===================== GAME DATA =====================
         const WORDS = {
             3: {
                 easy: ['CAT', 'DOG', 'SUN', 'CAR', 'BAT', 'HAT', 'PEN', 'CUP', 'BOX', 'FOX'],
@@ -567,6 +547,7 @@
             }
         };
 
+        // ===================== GAME STATE =====================
         let state = {
             gridSize: 5,
             difficulty: 'medium',
@@ -575,47 +556,78 @@
             currentGuess: '',
             gameStatus: 'playing',
             stats: {},
-            points: 0
+            points: 0,
+            leaderboard: []
         };
 
+        // ===================== INITIALIZATION =====================
         function init() {
+            console.log('Initializing game...');
+            
+            // Telegram WebApp
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.ready();
                 window.Telegram.WebApp.expand();
             }
-            loadStats();
+            
+            loadData();
             selectNewWord();
             renderAll();
-            setupEvents();
+            setupEventListeners();
+            
+            console.log('Game initialized! Target word:', state.targetWord);
         }
 
-        function loadStats() {
+        function loadData() {
+            // Load stats
             try {
-                const saved = localStorage.getItem('wordleStats');
-                if (saved) state.stats = JSON.parse(saved);
-            } catch (e) {}
+                const savedStats = localStorage.getItem('wordleStats');
+                if (savedStats) {
+                    state.stats = JSON.parse(savedStats);
+                }
+            } catch (e) {
+                console.log('Could not load stats');
+            }
             
+            // Initialize stats if needed
             if (!state.stats || !state.stats[3]) {
                 state.stats = {};
                 [3, 4, 5, 6].forEach(s => {
                     state.stats[s] = {
-                        easy: { played: 0, won: 0, streak: 0 },
-                        medium: { played: 0, won: 0, streak: 0 },
-                        hard: { played: 0, won: 0, streak: 0 }
+                        easy: { played: 0, won: 0, streak: 0, bestScore: 0 },
+                        medium: { played: 0, won: 0, streak: 0, bestScore: 0 },
+                        hard: { played: 0, won: 0, streak: 0, bestScore: 0 }
                     };
                 });
             }
+            
+            // Load leaderboard
+            try {
+                const savedLeaderboard = localStorage.getItem('wordleLeaderboard');
+                if (savedLeaderboard) {
+                    state.leaderboard = JSON.parse(savedLeaderboard);
+                }
+            } catch (e) {
+                state.leaderboard = [];
+            }
         }
 
-        function saveStats() {
-            try { localStorage.setItem('wordleStats', JSON.stringify(state.stats)); } catch (e) {}
+        function saveData() {
+            try {
+                localStorage.setItem('wordleStats', JSON.stringify(state.stats));
+                localStorage.setItem('wordleLeaderboard', JSON.stringify(state.leaderboard));
+            } catch (e) {
+                console.log('Could not save data');
+            }
         }
 
         function selectNewWord() {
             const words = WORDS[state.gridSize][state.difficulty];
             state.targetWord = words[Math.floor(Math.random() * words.length)];
+            console.log('New word selected:', state.targetWord);
         }
 
+        // ===================== RENDERING =====================
         function renderAll() {
             renderGrid();
             renderKeyboard();
@@ -638,11 +650,10 @@
                     cell.className = 'cell';
                     cell.id = 'cell-' + r + '-' + c;
                     
-                    // Заполняем ячейки
                     if (r < state.guesses.length) {
                         const letter = state.guesses[r][c];
                         cell.textContent = letter;
-                        cell.classList.add(getStatus(letter, c, state.guesses[r]));
+                        cell.classList.add(getLetterStatus(letter, c, state.guesses[r]));
                     } else if (r === state.guesses.length && c < state.currentGuess.length) {
                         cell.textContent = state.currentGuess[c];
                         cell.classList.add('filled');
@@ -665,25 +676,36 @@
             ];
 
             rows.forEach(row => {
-                const div = document.createElement('div');
-                div.className = 'keyboard-row';
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'keyboard-row';
                 
                 row.forEach(key => {
                     const btn = document.createElement('button');
                     btn.className = 'key';
                     btn.textContent = key;
-                    btn.dataset.key = key;
-                    if (key === 'ENTER' || key === '⌫') btn.classList.add('wide');
-                    if (key.length === 1) {
-                        const s = getKeyStatus(key);
-                        if (s) btn.classList.add(s);
+                    btn.type = 'button';
+                    
+                    if (key === 'ENTER' || key === '⌫') {
+                        btn.classList.add('wide');
                     }
+                    
+                    // Add keyboard status colors
+                    if (key.length === 1) {
+                        const status = getKeyboardStatus(key);
+                        if (status) btn.classList.add(status);
+                    }
+                    
                     btn.disabled = state.gameStatus !== 'playing';
-                    btn.onclick = () => handleKey(key);
-                    div.appendChild(btn);
+                    
+                    // Click handler
+                    btn.addEventListener('click', function() {
+                        handleKeyPress(key);
+                    });
+                    
+                    rowDiv.appendChild(btn);
                 });
                 
-                kb.appendChild(div);
+                kb.appendChild(rowDiv);
             });
         }
 
@@ -694,51 +716,141 @@
             for (let i = 0; i < 6; i++) {
                 const dot = document.createElement('div');
                 dot.className = 'attempt-dot';
+                
                 if (i < state.guesses.length) {
-                    dot.classList.add(state.gameStatus === 'won' && i === state.guesses.length - 1 ? 'won' : 'used');
+                    if (state.gameStatus === 'won' && i === state.guesses.length - 1) {
+                        dot.classList.add('won');
+                    } else {
+                        dot.classList.add('used');
+                    }
                 }
                 container.appendChild(dot);
             }
         }
 
         function updateUI() {
+            // Difficulty badge
             const badge = document.getElementById('diffBadge');
             badge.textContent = state.difficulty.charAt(0).toUpperCase() + state.difficulty.slice(1);
             badge.className = 'info-badge ' + state.difficulty;
             
+            // Size badge
             document.getElementById('sizeBadge').textContent = state.gridSize + '×6';
-            document.getElementById('streakBadge').textContent = '🔥 ' + state.stats[state.gridSize][state.difficulty].streak;
+            
+            // Streak badge
+            const currentStats = state.stats[state.gridSize][state.difficulty];
+            document.getElementById('streakBadge').textContent = '🔥 ' + currentStats.streak;
         }
 
-        function getStatus(letter, index, guess) {
+        function renderSettingsModal() {
+            // Size buttons
+            const sizeDiv = document.getElementById('sizeButtons');
+            sizeDiv.innerHTML = '';
+            
+            [3, 4, 5, 6].forEach(size => {
+                const btn = document.createElement('button');
+                btn.className = 'settings-btn' + (state.gridSize === size ? ' active' : '');
+                btn.textContent = size + '×6';
+                btn.type = 'button';
+                btn.addEventListener('click', function() {
+                    changeGridSize(size);
+                });
+                sizeDiv.appendChild(btn);
+            });
+
+            // Difficulty buttons
+            const diffDiv = document.getElementById('diffButtons');
+            diffDiv.innerHTML = '';
+            
+            const diffConfig = [
+                { key: 'easy', emoji: '⭐', label: 'Easy' },
+                { key: 'medium', emoji: '⚡', label: 'Medium' },
+                { key: 'hard', emoji: '🔥', label: 'Hard' }
+            ];
+            
+            diffConfig.forEach(diff => {
+                const btn = document.createElement('button');
+                btn.className = 'diff-btn' + (state.difficulty === diff.key ? ' active' : '');
+                btn.type = 'button';
+                
+                const stats = state.stats[state.gridSize][diff.key];
+                btn.innerHTML = '<span>' + diff.emoji + ' ' + diff.label + '</span><span class="stats">' + stats.won + '/' + stats.played + ' wins</span>';
+                
+                btn.addEventListener('click', function() {
+                    changeDifficulty(diff.key);
+                });
+                diffDiv.appendChild(btn);
+            });
+        }
+
+        function renderLeaderboard() {
+            const list = document.getElementById('leaderboardList');
+            list.innerHTML = '';
+            
+            if (state.leaderboard.length === 0) {
+                list.innerHTML = '<p style="text-align:center;opacity:0.6;">No scores yet. Play to get on the board!</p>';
+                return;
+            }
+            
+            const sorted = [...state.leaderboard].sort((a, b) => b.score - a.score).slice(0, 10);
+            
+            sorted.forEach((entry, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                
+                if (index === 0) item.classList.add('gold');
+                else if (index === 1) item.classList.add('silver');
+                else if (index === 2) item.classList.add('bronze');
+                
+                const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1) + '.';
+                
+                item.innerHTML = '<span class="leaderboard-rank">' + rankEmoji + '</span>' +
+                    '<span class="leaderboard-name">' + entry.word + ' (' + entry.difficulty + ')</span>' +
+                    '<span class="leaderboard-score">' + entry.score + '</span>';
+                
+                list.appendChild(item);
+            });
+        }
+
+        // ===================== GAME LOGIC =====================
+        function getLetterStatus(letter, index, guess) {
             if (state.targetWord[index] === letter) return 'correct';
             if (state.targetWord.includes(letter)) return 'present';
             return 'absent';
         }
 
-        function getKeyStatus(letter) {
-            let best = null;
+        function getKeyboardStatus(letter) {
+            let bestStatus = null;
+            
             for (const guess of state.guesses) {
                 for (let i = 0; i < guess.length; i++) {
                     if (guess[i] === letter) {
-                        const s = getStatus(letter, i, guess);
-                        if (s === 'correct') return 'correct';
-                        if (s === 'present') best = 'present';
-                        if (s === 'absent' && !best) best = 'absent';
+                        const status = getLetterStatus(letter, i, guess);
+                        if (status === 'correct') return 'correct';
+                        if (status === 'present' && bestStatus !== 'correct') bestStatus = 'present';
+                        if (status === 'absent' && !bestStatus) bestStatus = 'absent';
                     }
                 }
             }
-            return best;
+            
+            return bestStatus;
         }
 
-        function handleKey(key) {
-            if (state.gameStatus !== 'playing') return;
+        function handleKeyPress(key) {
+            console.log('Key pressed:', key, 'Game status:', state.gameStatus);
+            
+            if (state.gameStatus !== 'playing') {
+                console.log('Game not playing, ignoring input');
+                return;
+            }
             
             if (key === 'ENTER') {
                 submitGuess();
             } else if (key === '⌫' || key === 'BACKSPACE') {
-                state.currentGuess = state.currentGuess.slice(0, -1);
-                renderGrid();
+                if (state.currentGuess.length > 0) {
+                    state.currentGuess = state.currentGuess.slice(0, -1);
+                    renderGrid();
+                }
             } else if (/^[A-Z]$/i.test(key) && state.currentGuess.length < state.gridSize) {
                 state.currentGuess += key.toUpperCase();
                 renderGrid();
@@ -746,167 +858,325 @@
         }
 
         function submitGuess() {
+            console.log('Submitting guess:', state.currentGuess, 'Target:', state.targetWord);
+            
+            // Check length
             if (state.currentGuess.length !== state.gridSize) {
-                shake();
-                showMsg('Need ' + state.gridSize + ' letters!');
+                shakeCurrentRow();
+                showMessage('Need ' + state.gridSize + ' letters! ✏️');
                 return;
             }
             
+            // Check if already guessed
             if (state.guesses.includes(state.currentGuess)) {
-                shake();
-                showMsg('Already tried!');
+                shakeCurrentRow();
+                showMessage('Already tried! 🤔');
                 return;
             }
 
+            // Add guess
             state.guesses.push(state.currentGuess);
             
+            // Check for win
             if (state.currentGuess === state.targetWord) {
+                console.log('WINNER!');
                 state.gameStatus = 'won';
-                state.points = calcPoints();
-                state.stats[state.gridSize][state.difficulty].played++;
-                state.stats[state.gridSize][state.difficulty].won++;
-                state.stats[state.gridSize][state.difficulty].streak++;
-                saveStats();
-                setTimeout(() => showResult(true), 500);
+                state.points = calculatePoints();
+                
+                // Update stats
+                const currentStats = state.stats[state.gridSize][state.difficulty];
+                currentStats.played++;
+                currentStats.won++;
+                currentStats.streak++;
+                if (state.points > currentStats.bestScore) {
+                    currentStats.bestScore = state.points;
+                }
+                
+                // Add to leaderboard
+                state.leaderboard.push({
+                    word: state.targetWord,
+                    score: state.points,
+                    difficulty: state.difficulty,
+                    size: state.gridSize,
+                    tries: state.guesses.length,
+                    date: new Date().toISOString()
+                });
+                
+                saveData();
+                
+                // Haptic feedback
                 if (window.Telegram?.WebApp?.HapticFeedback) {
                     window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
                 }
+                
+                // Show result after animation
+                setTimeout(function() {
+                    showResult(true);
+                }, 600);
+                
             } else if (state.guesses.length >= 6) {
+                console.log('GAME OVER');
                 state.gameStatus = 'lost';
-                state.stats[state.gridSize][state.difficulty].played++;
-                state.stats[state.gridSize][state.difficulty].streak = 0;
-                saveStats();
-                setTimeout(() => showResult(false), 500);
+                
+                // Update stats
+                const currentStats = state.stats[state.gridSize][state.difficulty];
+                currentStats.played++;
+                currentStats.streak = 0;
+                
+                saveData();
+                
+                // Haptic feedback
+                if (window.Telegram?.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('error');
+                }
+                
+                setTimeout(function() {
+                    showResult(false);
+                }, 600);
             }
 
             state.currentGuess = '';
             renderAll();
         }
 
-        function calcPoints() {
-            const base = { 3: 100, 4: 150, 5: 200, 6: 250 };
-            const mult = { easy: 1, medium: 2, hard: 3 };
-            return base[state.gridSize] * mult[state.difficulty] * (7 - state.guesses.length);
+        function calculatePoints() {
+            const basePoints = { 3: 100, 4: 150, 5: 200, 6: 250 };
+            const multiplier = { easy: 1, medium: 2, hard: 3 };
+            const triesBonus = 7 - state.guesses.length;
+            return basePoints[state.gridSize] * multiplier[state.difficulty] * triesBonus;
         }
 
-        function shake() {
-            const row = document.getElementById('row-' + state.guesses.length);
+        function shakeCurrentRow() {
+            const rowIndex = state.guesses.length;
+            const row = document.getElementById('row-' + rowIndex);
             if (row) {
                 row.classList.add('shake');
-                setTimeout(() => row.classList.remove('shake'), 400);
+                setTimeout(function() {
+                    row.classList.remove('shake');
+                }, 400);
             }
         }
 
-        function showMsg(text) {
+        function showMessage(text) {
             const msg = document.getElementById('message');
             msg.textContent = text;
-            msg.classList.remove('hidden');
-            setTimeout(() => msg.classList.add('hidden'), 2000);
+            msg.style.display = 'block';
+            
+            setTimeout(function() {
+                msg.style.display = 'none';
+            }, 2000);
         }
 
         function showResult(won) {
+            console.log('Showing result:', won ? 'WON' : 'LOST');
+            
             document.getElementById('resultEmoji').textContent = won ? '🎉' : '😢';
             document.getElementById('resultTitle').textContent = won ? 'Amazing!' : 'Game Over';
             document.getElementById('resultTitle').className = 'result-title ' + (won ? 'won' : 'lost');
-            document.getElementById('resultText').textContent = won ? 'You got it in ' + state.guesses.length + ' tries!' : 'The word was:';
+            document.getElementById('resultText').textContent = won 
+                ? 'You got it in ' + state.guesses.length + ' ' + (state.guesses.length === 1 ? 'try' : 'tries') + '!'
+                : 'The word was:';
             
             const wordEl = document.getElementById('resultWord');
             if (won) {
-                wordEl.classList.add('hidden');
+                wordEl.style.display = 'none';
             } else {
                 wordEl.textContent = state.targetWord;
-                wordEl.classList.remove('hidden');
+                wordEl.style.display = 'block';
             }
             
-            document.getElementById('resultPoints').textContent = won ? '+' + state.points + ' pts 🏆' : '';
-            document.getElementById('resultPanel').classList.remove('hidden');
+            document.getElementById('resultPoints').textContent = won ? '+' + state.points + ' points 🏆' : '';
+            document.getElementById('resultPanel').classList.add('show');
+        }
+
+        function hideResult() {
+            document.getElementById('resultPanel').classList.remove('show');
         }
 
         function resetGame() {
+            console.log('Resetting game...');
             state.guesses = [];
             state.currentGuess = '';
             state.gameStatus = 'playing';
             state.points = 0;
-            document.getElementById('resultPanel').classList.add('hidden');
+            
+            hideResult();
             selectNewWord();
             renderAll();
+            
+            console.log('Game reset! New word:', state.targetWord);
+        }
+
+        function changeGridSize(newSize) {
+            console.log('Changing grid size to:', newSize);
+            state.gridSize = newSize;
+            state.guesses = [];
+            state.currentGuess = '';
+            state.gameStatus = 'playing';
+            selectNewWord();
+            renderAll();
+            renderSettingsModal();
+        }
+
+        function changeDifficulty(newDiff) {
+            console.log('Changing difficulty to:', newDiff);
+            state.difficulty = newDiff;
+            state.guesses = [];
+            state.currentGuess = '';
+            state.gameStatus = 'playing';
+            selectNewWord();
+            renderAll();
+            renderSettingsModal();
         }
 
         function shareResult() {
             let grid = '';
-            state.guesses.forEach(g => {
-                for (let i = 0; i < g.length; i++) {
-                    const s = getStatus(g[i], i, g);
-                    grid += s === 'correct' ? '🟦' : s === 'present' ? '🟨' : '⬜';
+            state.guesses.forEach(function(guess) {
+                for (let i = 0; i < guess.length; i++) {
+                    const status = getLetterStatus(guess[i], i, guess);
+                    grid += status === 'correct' ? '🟦' : status === 'present' ? '🟨' : '⬜';
                 }
                 grid += '\n';
             });
             
-            const text = '🎮 Wordle ' + state.gridSize + '×6 ' + (state.gameStatus === 'won' ? state.guesses.length + '/6' : 'X/6') + '\n' + state.difficulty + '\n\n' + grid;
+            const statusText = state.gameStatus === 'won' ? state.guesses.length + '/6' : 'X/6';
+            const text = '🎮 Wordle ' + state.gridSize + '×6 ' + statusText + '\n' +
+                '📊 ' + state.difficulty.charAt(0).toUpperCase() + state.difficulty.slice(1) + '\n' +
+                (state.gameStatus === 'won' ? '🏆 ' + state.points + ' points\n' : '') +
+                '\n' + grid + '\n' +
+                '🎯 Play: t.me/wordletgapp_bot/wordle';
             
             if (window.Telegram?.WebApp) {
                 window.Telegram.WebApp.openTelegramLink('https://t.me/share/url?text=' + encodeURIComponent(text));
+            } else if (navigator.share) {
+                navigator.share({ text: text }).catch(function() {});
             } else if (navigator.clipboard) {
-                navigator.clipboard.writeText(text);
-                showMsg('Copied!');
+                navigator.clipboard.writeText(text).then(function() {
+                    showMessage('📋 Copied to clipboard!');
+                });
             }
         }
 
-        function toggleInstructions() {
-            document.getElementById('instructions').classList.toggle('hidden');
+        // ===================== MODAL FUNCTIONS =====================
+        function openInstructions() {
+            console.log('Opening instructions');
+            document.getElementById('instructions').classList.add('show');
+        }
+
+        function closeInstructions() {
+            console.log('Closing instructions');
+            document.getElementById('instructions').classList.remove('show');
         }
 
         function openSettings() {
-            renderSettingsButtons();
-            document.getElementById('settingsModal').classList.remove('hidden');
+            console.log('Opening settings');
+            renderSettingsModal();
+            document.getElementById('settingsModal').classList.add('show');
         }
 
         function closeSettings() {
-            document.getElementById('settingsModal').classList.add('hidden');
+            console.log('Closing settings');
+            document.getElementById('settingsModal').classList.remove('show');
         }
 
-        function renderSettingsButtons() {
-            const sizeDiv = document.getElementById('sizeButtons');
-            sizeDiv.innerHTML = '';
-            [3,4,5,6].forEach(s => {
-                const btn = document.createElement('button');
-                btn.className = 'settings-btn' + (state.gridSize === s ? ' active' : '');
-                btn.textContent = s + '×6';
-                btn.onclick = () => { state.gridSize = s; resetGame(); renderSettingsButtons(); };
-                sizeDiv.appendChild(btn);
-            });
-
-            const diffDiv = document.getElementById('diffButtons');
-            diffDiv.innerHTML = '';
-            ['easy','medium','hard'].forEach(d => {
-                const btn = document.createElement('button');
-                btn.className = 'diff-btn' + (state.difficulty === d ? ' active' : '');
-                const st = state.stats[state.gridSize][d];
-                btn.innerHTML = '<span>' + (d === 'easy' ? '⭐' : d === 'medium' ? '⚡' : '🔥') + ' ' + d.charAt(0).toUpperCase() + d.slice(1) + '</span><span class="stats">' + st.won + '/' + st.played + '</span>';
-                btn.onclick = () => { state.difficulty = d; resetGame(); renderSettingsButtons(); };
-                diffDiv.appendChild(btn);
-            });
+        function openLeaderboard() {
+            console.log('Opening leaderboard');
+            renderLeaderboard();
+            document.getElementById('leaderboardModal').classList.add('show');
         }
 
-        function setupEvents() {
-            document.getElementById('helpBtn').onclick = toggleInstructions;
-            document.getElementById('settingsBtn').onclick = openSettings;
-            document.getElementById('statsBtn').onclick = openSettings;
+        function closeLeaderboard() {
+            console.log('Closing leaderboard');
+            document.getElementById('leaderboardModal').classList.remove('show');
+        }
+
+        // ===================== EVENT LISTENERS =====================
+        function setupEventListeners() {
+            console.log('Setting up event listeners...');
             
-            document.addEventListener('keydown', e => {
+            // Header buttons
+            document.getElementById('helpBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Help button clicked');
+                openInstructions();
+            });
+            
+            document.getElementById('settingsBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Settings button clicked');
+                openSettings();
+            });
+            
+            document.getElementById('leaderboardBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Leaderboard button clicked');
+                openLeaderboard();
+            });
+            
+            // Close buttons
+            document.getElementById('closeInstructionsBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                closeInstructions();
+            });
+            
+            document.getElementById('closeSettingsBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                closeSettings();
+            });
+            
+            document.getElementById('closeLeaderboardBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                closeLeaderboard();
+            });
+            
+            // Result panel buttons
+            document.getElementById('shareBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                shareResult();
+            });
+            
+            document.getElementById('playAgainBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                resetGame();
+            });
+            
+            // Modal backdrop clicks
+            document.getElementById('settingsModal').addEventListener('click', function(e) {
+                if (e.target.id === 'settingsModal') {
+                    closeSettings();
+                }
+            });
+            
+            document.getElementById('leaderboardModal').addEventListener('click', function(e) {
+                if (e.target.id === 'leaderboardModal') {
+                    closeLeaderboard();
+                }
+            });
+            
+            // Physical keyboard
+            document.addEventListener('keydown', function(e) {
                 if (state.gameStatus !== 'playing') return;
-                if (!document.getElementById('settingsModal').classList.contains('hidden')) return;
                 
-                if (e.key === 'Enter') { e.preventDefault(); handleKey('ENTER'); }
-                else if (e.key === 'Backspace') { e.preventDefault(); handleKey('BACKSPACE'); }
-                else if (/^[a-zA-Z]$/.test(e.key)) { e.preventDefault(); handleKey(e.key.toUpperCase()); }
+                // Don't handle if modal is open
+                if (document.getElementById('settingsModal').classList.contains('show')) return;
+                if (document.getElementById('leaderboardModal').classList.contains('show')) return;
+                
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleKeyPress('ENTER');
+                } else if (e.key === 'Backspace') {
+                    e.preventDefault();
+                    handleKeyPress('BACKSPACE');
+                } else if (/^[a-zA-Z]$/.test(e.key)) {
+                    e.preventDefault();
+                    handleKeyPress(e.key.toUpperCase());
+                }
             });
             
-            document.getElementById('settingsModal').onclick = e => {
-                if (e.target.id === 'settingsModal') closeSettings();
-            };
+            console.log('Event listeners set up complete!');
         }
 
+        // ===================== START GAME =====================
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
