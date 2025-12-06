@@ -16,20 +16,16 @@
         html, body {
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            overflow-x: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 50%, #1e1b4b 100%);
             color: white;
         }
         
         #app {
-            width: 100%;
-            height: 100%;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
+            min-height: 100%;
             padding: 12px;
-            padding-bottom: 140px;
+            padding-bottom: 20px;
         }
         
         .header {
@@ -55,14 +51,14 @@
             background: rgba(255,255,255,0.1);
             border: none;
             color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 22px;
             transition: background 0.2s;
         }
         
@@ -75,58 +71,68 @@
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
         
         .info-badge {
             background: rgba(255,255,255,0.1);
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 20px;
             font-size: 14px;
+            font-weight: 600;
         }
         
         .info-badge.easy { color: #4ade80; }
         .info-badge.medium { color: #facc15; }
         .info-badge.hard { color: #f87171; }
         
+        /* ИСПРАВЛЕННАЯ СЕТКА */
         .grid-container {
+            width: 100%;
             max-width: 350px;
-            margin: 0 auto 16px;
+            margin: 0 auto 20px;
+            padding: 0 10px;
         }
         
         .grid {
-            display: grid;
-            gap: 6px;
-            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
         }
         
         .row {
-            display: grid;
-            gap: 6px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
         }
         
+        /* КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ - фиксированные размеры ячеек */
         .cell {
-            aspect-ratio: 1;
+            width: 52px;
+            height: 52px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-size: 24px;
             border-radius: 8px;
-            border: 2px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
-            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.08);
+            transition: all 0.2s;
             text-transform: uppercase;
         }
         
-        .cell.size-3 { font-size: 32px; }
-        .cell.size-4 { font-size: 28px; }
-        .cell.size-5 { font-size: 24px; }
-        .cell.size-6 { font-size: 20px; }
+        /* Размеры ячеек в зависимости от размера сетки */
+        .cell.size-3 { width: 70px; height: 70px; font-size: 32px; }
+        .cell.size-4 { width: 62px; height: 62px; font-size: 28px; }
+        .cell.size-5 { width: 52px; height: 52px; font-size: 24px; }
+        .cell.size-6 { width: 44px; height: 44px; font-size: 20px; }
         
         .cell.filled {
-            border-color: rgba(255,255,255,0.4);
-            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.15);
             transform: scale(1.05);
         }
         
@@ -139,7 +145,7 @@
         .cell.present {
             background: #eab308;
             border-color: #facc15;
-            color: black;
+            color: #000;
             animation: flip 0.5s ease;
         }
         
@@ -150,67 +156,85 @@
         }
         
         @keyframes flip {
-            0% { transform: rotateX(0); }
-            50% { transform: rotateX(90deg); }
-            100% { transform: rotateX(0); }
+            0% { transform: rotateX(0) scale(1); }
+            50% { transform: rotateX(90deg) scale(1.1); }
+            100% { transform: rotateX(0) scale(1); }
         }
         
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-8px); }
+            80% { transform: translateX(8px); }
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
         }
         
         .row.shake {
-            animation: shake 0.5s ease;
+            animation: shake 0.4s ease;
         }
         
+        .cell.pop {
+            animation: pop 0.15s ease;
+        }
+        
+        /* Клавиатура */
         .keyboard {
             max-width: 400px;
             margin: 0 auto;
+            padding: 0 4px;
         }
         
         .keyboard-row {
             display: flex;
             justify-content: center;
-            gap: 4px;
-            margin-bottom: 6px;
+            gap: 5px;
+            margin-bottom: 8px;
         }
         
         .key {
-            min-width: 28px;
-            height: 48px;
+            min-width: 30px;
+            height: 50px;
             border: none;
             border-radius: 6px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #475569;
+            background: #64748b;
             color: white;
-            transition: all 0.15s;
+            transition: all 0.1s;
+            flex: 1;
+            max-width: 40px;
         }
         
         .key:active {
             transform: scale(0.95);
+            background: #475569;
         }
         
         .key.wide {
-            min-width: 50px;
+            min-width: 55px;
+            max-width: 65px;
             font-size: 12px;
         }
         
         .key.correct {
             background: #3b82f6;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
         }
         
         .key.present {
             background: #eab308;
-            color: black;
-            box-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
+            color: #000;
+            box-shadow: 0 0 12px rgba(234, 179, 8, 0.5);
         }
         
         .key.absent {
@@ -222,70 +246,66 @@
             cursor: not-allowed;
         }
         
+        /* Сообщения */
         .message {
             position: fixed;
-            top: 60px;
+            top: 70px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.9);
             color: white;
             padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 500;
+            border-radius: 10px;
+            font-weight: 600;
             z-index: 1000;
-            animation: fadeIn 0.3s ease;
+            animation: slideDown 0.3s ease;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         
+        /* Модальные окна */
         .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 100;
             padding: 16px;
+            backdrop-filter: blur(4px);
         }
         
         .modal-content {
-            background: #1e293b;
-            border-radius: 16px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 20px;
             padding: 24px;
             max-width: 360px;
             width: 100%;
             border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
         
         .modal h2 {
-            margin-bottom: 16px;
-            font-size: 20px;
+            margin-bottom: 20px;
+            font-size: 22px;
+            text-align: center;
         }
         
-        .modal p {
-            margin-bottom: 8px;
-            color: rgba(255,255,255,0.8);
-        }
-        
-        .modal-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
-        
+        /* Кнопки */
         .btn {
-            flex: 1;
+            width: 100%;
             padding: 14px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.2s;
+            margin-top: 8px;
         }
         
         .btn:active {
@@ -293,12 +313,12 @@
         }
         
         .btn-primary {
-            background: #7c3aed;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
             color: white;
         }
         
         .btn-success {
-            background: #22c55e;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
             color: white;
         }
         
@@ -307,22 +327,25 @@
             color: white;
         }
         
+        /* Результат */
         .result-panel {
             background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 24px;
             text-align: center;
-            margin-bottom: 16px;
+            margin: 20px auto;
+            max-width: 350px;
             border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
         }
         
         .result-emoji {
-            font-size: 64px;
-            margin-bottom: 12px;
+            font-size: 72px;
+            margin-bottom: 16px;
         }
         
         .result-title {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             margin-bottom: 8px;
         }
@@ -331,28 +354,43 @@
         .result-title.lost { color: #f87171; }
         
         .result-word {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: bold;
             color: #facc15;
-            margin: 12px 0;
+            margin: 16px 0;
+            letter-spacing: 4px;
         }
         
         .result-points {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
             color: #facc15;
-            margin-bottom: 16px;
+            margin: 16px 0;
         }
         
+        .result-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .result-buttons .btn {
+            flex: 1;
+            margin: 0;
+        }
+        
+        /* Настройки */
         .settings-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         
         .settings-label {
             font-size: 14px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .settings-buttons {
@@ -362,10 +400,11 @@
         }
         
         .settings-btn {
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
+            padding: 14px 8px;
+            border: 2px solid transparent;
+            border-radius: 10px;
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
             background: rgba(255,255,255,0.05);
             color: white;
@@ -373,8 +412,9 @@
         }
         
         .settings-btn.active {
-            background: #7c3aed;
-            box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+            background: rgba(124, 58, 237, 0.3);
+            border-color: #7c3aed;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
         }
         
         .settings-btn:active {
@@ -388,9 +428,9 @@
         }
         
         .diff-btn {
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
+            padding: 16px;
+            border: 2px solid transparent;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             background: rgba(255,255,255,0.05);
@@ -402,25 +442,45 @@
         }
         
         .diff-btn.active {
-            background: #7c3aed;
+            background: rgba(124, 58, 237, 0.3);
+            border-color: #7c3aed;
         }
         
-        .diff-btn .label { display: flex; align-items: center; gap: 8px; }
-        .diff-btn .stats { font-size: 12px; opacity: 0.7; }
+        .diff-btn:active {
+            transform: scale(0.98);
+        }
         
+        .diff-btn .label { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            font-size: 16px;
+        }
+        
+        .diff-btn .stats { 
+            font-size: 13px; 
+            opacity: 0.6; 
+        }
+        
+        /* Попытки */
         .attempts {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px;
-            margin-top: 16px;
+            gap: 10px;
+            margin-top: 20px;
             font-size: 14px;
             color: rgba(255,255,255,0.6);
         }
         
+        .attempts-dots {
+            display: flex;
+            gap: 8px;
+        }
+        
         .attempt-dot {
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: rgba(255,255,255,0.2);
             transition: all 0.3s;
@@ -428,55 +488,60 @@
         
         .attempt-dot.used {
             background: #ef4444;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
         }
         
         .attempt-dot.won {
             background: #22c55e;
-            transform: scale(1.2);
+            transform: scale(1.3);
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
         }
         
-        .hidden {
-            display: none !important;
-        }
-
+        /* Инструкции */
         .instructions {
             background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            font-size: 14px;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 0 auto 20px;
             max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
         .instructions h3 {
-            margin-bottom: 12px;
-            font-size: 18px;
-        }
-        
-        .instructions ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .instructions li {
-            margin-bottom: 8px;
+            margin-bottom: 16px;
+            font-size: 20px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         
+        .instructions ul {
+            list-style: none;
+        }
+        
+        .instructions li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+        
         .color-sample {
             display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
         }
         
         .color-sample.blue { background: #3b82f6; }
-        .color-sample.yellow { background: #eab308; color: black; }
+        .color-sample.yellow { background: #eab308; color: #000; }
         .color-sample.gray { background: #4b5563; }
+        
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -503,11 +568,11 @@
             <h3>💡 How to Play</h3>
             <ul>
                 <li>• Guess the word in 6 tries</li>
-                <li>• <span class="color-sample blue">Blue</span> = correct position</li>
-                <li>• <span class="color-sample yellow">Yellow</span> = wrong position</li>
-                <li>• <span class="color-sample gray">Gray</span> = not in word</li>
+                <li>• <span class="color-sample blue">Blue</span> = correct letter & position</li>
+                <li>• <span class="color-sample yellow">Yellow</span> = correct letter, wrong spot</li>
+                <li>• <span class="color-sample gray">Gray</span> = letter not in word</li>
             </ul>
-            <button class="btn btn-secondary" style="width: 100%; margin-top: 12px;" onclick="toggleInstructions()">Got it!</button>
+            <button class="btn btn-secondary" onclick="toggleInstructions()">Got it! 👍</button>
         </div>
         
         <!-- Grid -->
@@ -521,8 +586,8 @@
             <div class="result-title" id="resultTitle">Amazing!</div>
             <p id="resultText">You found the word!</p>
             <div class="result-word hidden" id="resultWord"></div>
-            <div class="result-points" id="resultPoints">+0 points</div>
-            <div class="modal-buttons">
+            <div class="result-points" id="resultPoints"></div>
+            <div class="result-buttons">
                 <button class="btn btn-success" onclick="shareResult()">📤 Share</button>
                 <button class="btn btn-primary" onclick="resetGame()">🔄 Play Again</button>
             </div>
@@ -534,7 +599,7 @@
         <!-- Attempts -->
         <div class="attempts">
             <span>Attempts:</span>
-            <div id="attemptDots"></div>
+            <div class="attempts-dots" id="attemptDots"></div>
         </div>
     </div>
     
@@ -550,7 +615,7 @@
                 <div class="settings-label">Difficulty</div>
                 <div class="diff-buttons" id="diffButtons"></div>
             </div>
-            <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="closeSettings()">Close</button>
+            <button class="btn btn-primary" onclick="closeSettings()">Done ✓</button>
         </div>
     </div>
     
@@ -558,7 +623,7 @@
     <div class="message hidden" id="message"></div>
 
     <script>
-        // ============ GAME STATE ============
+        // ============ GAME DATA ============
         const WORDS = {
             3: {
                 easy: ['CAT', 'DOG', 'SUN', 'CAR', 'BAT', 'HAT', 'PEN', 'CUP', 'BOX', 'FOX', 'BED', 'EGG', 'JAR', 'KEY', 'MAP', 'BAG', 'BUS', 'TOY', 'NET', 'POT'],
@@ -578,10 +643,11 @@
             6: {
                 easy: ['ANIMAL', 'BASKET', 'CASTLE', 'DOCTOR', 'ENGINE', 'FLOWER', 'GARDEN', 'ISLAND', 'JUNGLE', 'LAPTOP', 'MARKET', 'NATURE', 'ORANGE', 'PLANET', 'RABBIT', 'SCHOOL', 'SUMMER', 'TURTLE', 'WINTER', 'BANANA'],
                 medium: ['BATTLE', 'CHANCE', 'DEBATE', 'EXTENT', 'FIERCE', 'GROWTH', 'IMPACT', 'LAWYER', 'MUSCLE', 'OBTAIN', 'POLICY', 'RANDOM', 'STABLE', 'TREATY', 'URGENT', 'VENDOR', 'WEALTH', 'ANCHOR', 'BRONZE', 'CARBON'],
-                hard: ['BUZZED', 'FIZZLE', 'JAZZED', 'MUZZLE', 'NUZZLE', 'PUZZLE', 'RHYTHM', 'SYZYGY', 'TWISTY', 'WAFFLE', 'ZOMBIE', 'OXYGEN', 'ZEPHYR', 'ENZYME', 'QUARTZ', 'SPHINX', 'FRENZY', 'PHLEGM', 'GROUCH', 'BREEZE']
+                hard: ['BUZZED', 'FIZZLE', 'JAZZED', 'MUZZLE', 'NUZZLE', 'PUZZLE', 'RHYTHM', 'SYZYGY', 'TWISTY', 'WAFFLE', 'ZOMBIE', 'OXYGEN', 'ZEPHYR', 'ENZYME', 'QUARTZ', 'SPHINX', 'FRENZY', 'BREEZE', 'FREEZE', 'SNEEZE']
             }
         };
 
+        // ============ GAME STATE ============
         let state = {
             gridSize: 5,
             difficulty: 'medium',
@@ -606,10 +672,10 @@
             selectNewWord();
             renderGrid();
             renderKeyboard();
-            updateUI();
-            setupEventListeners();
             renderAttemptDots();
             renderSettingsButtons();
+            updateUI();
+            setupEventListeners();
         }
 
         function loadStats() {
@@ -618,9 +684,7 @@
                 if (saved) {
                     state.stats = JSON.parse(saved);
                 }
-            } catch (e) {
-                console.log('Could not load stats');
-            }
+            } catch (e) {}
 
             if (!state.stats) {
                 state.stats = {};
@@ -637,28 +701,23 @@
         function saveStats() {
             try {
                 localStorage.setItem('wordleStats', JSON.stringify(state.stats));
-            } catch (e) {
-                console.log('Could not save stats');
-            }
+            } catch (e) {}
         }
 
         function selectNewWord() {
             const words = WORDS[state.gridSize][state.difficulty];
             state.targetWord = words[Math.floor(Math.random() * words.length)];
-            console.log('Word:', state.targetWord); // Для отладки
         }
 
         // ============ RENDERING ============
         function renderGrid() {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
-            grid.style.gridTemplateColumns = `repeat(${state.gridSize}, 1fr)`;
 
             for (let row = 0; row < 6; row++) {
                 const rowDiv = document.createElement('div');
                 rowDiv.className = 'row';
                 rowDiv.id = `row-${row}`;
-                rowDiv.style.gridTemplateColumns = `repeat(${state.gridSize}, 1fr)`;
 
                 for (let col = 0; col < state.gridSize; col++) {
                     const cell = document.createElement('div');
@@ -678,17 +737,19 @@
                     const cell = document.getElementById(`cell-${row}-${col}`);
                     if (!cell) continue;
 
+                    // Reset classes
                     cell.className = `cell size-${state.gridSize}`;
                     cell.textContent = '';
 
                     if (row < state.guesses.length) {
-                        // Submitted guess
+                        // Submitted row
                         const letter = state.guesses[row][col];
                         cell.textContent = letter;
-                        cell.classList.add(getLetterStatus(letter, col, state.guesses[row]));
+                        const status = getLetterStatus(letter, col, state.guesses[row]);
+                        cell.classList.add(status);
                         cell.style.animationDelay = `${col * 0.1}s`;
                     } else if (row === state.guesses.length) {
-                        // Current guess
+                        // Current input row
                         const letter = state.currentGuess[col] || '';
                         cell.textContent = letter;
                         if (letter) {
@@ -723,10 +784,6 @@
                         btn.classList.add('wide');
                     }
 
-                    if (state.gameStatus !== 'playing') {
-                        btn.disabled = true;
-                    }
-
                     btn.addEventListener('click', () => handleKey(key));
                     rowDiv.appendChild(btn);
                 });
@@ -740,14 +797,15 @@
         function updateKeyboard() {
             document.querySelectorAll('.key').forEach(btn => {
                 const key = btn.dataset.key;
-                if (key.length === 1 && key !== '⌫') {
+                btn.disabled = state.gameStatus !== 'playing';
+                
+                if (key && key.length === 1 && key !== '⌫') {
                     btn.classList.remove('correct', 'present', 'absent');
                     const status = getKeyStatus(key);
                     if (status) {
                         btn.classList.add(status);
                     }
                 }
-                btn.disabled = state.gameStatus !== 'playing';
             });
         }
 
@@ -777,8 +835,7 @@
             sizeContainer.innerHTML = '';
             [3, 4, 5, 6].forEach(size => {
                 const btn = document.createElement('button');
-                btn.className = 'settings-btn';
-                if (state.gridSize === size) btn.classList.add('active');
+                btn.className = 'settings-btn' + (state.gridSize === size ? ' active' : '');
                 btn.textContent = `${size}×6`;
                 btn.onclick = () => changeSize(size);
                 sizeContainer.appendChild(btn);
@@ -787,25 +844,28 @@
             // Difficulty buttons
             const diffContainer = document.getElementById('diffButtons');
             diffContainer.innerHTML = '';
-            ['easy', 'medium', 'hard'].forEach(diff => {
+            
+            const diffConfig = [
+                { key: 'easy', emoji: '⭐', label: 'Easy' },
+                { key: 'medium', emoji: '⚡', label: 'Medium' },
+                { key: 'hard', emoji: '🔥', label: 'Hard' }
+            ];
+            
+            diffConfig.forEach(({ key, emoji, label }) => {
                 const btn = document.createElement('button');
-                btn.className = 'diff-btn';
-                if (state.difficulty === diff) btn.classList.add('active');
+                btn.className = 'diff-btn' + (state.difficulty === key ? ' active' : '');
                 
-                const emoji = diff === 'easy' ? '⭐' : diff === 'medium' ? '⚡' : '🏆';
-                const stats = state.stats[state.gridSize][diff];
-                
+                const stats = state.stats[state.gridSize][key];
                 btn.innerHTML = `
-                    <span class="label">${emoji} ${diff.charAt(0).toUpperCase() + diff.slice(1)}</span>
+                    <span class="label">${emoji} ${label}</span>
                     <span class="stats">${stats.won}/${stats.played} wins</span>
                 `;
-                btn.onclick = () => changeDifficulty(diff);
+                btn.onclick = () => changeDifficulty(key);
                 diffContainer.appendChild(btn);
             });
         }
 
         function updateUI() {
-            // Badge updates
             const diffBadge = document.getElementById('diffBadge');
             diffBadge.textContent = state.difficulty.charAt(0).toUpperCase() + state.difficulty.slice(1);
             diffBadge.className = `info-badge ${state.difficulty}`;
@@ -822,21 +882,20 @@
         }
 
         function getKeyStatus(letter) {
-            let status = null;
-            state.guesses.forEach(guess => {
-                guess.split('').forEach((l, i) => {
-                    if (l === letter) {
-                        if (state.targetWord[i] === letter) {
-                            status = 'correct';
-                        } else if (state.targetWord.includes(letter) && status !== 'correct') {
-                            status = 'present';
-                        } else if (!status) {
-                            status = 'absent';
-                        }
+            let bestStatus = null;
+            
+            for (const guess of state.guesses) {
+                for (let i = 0; i < guess.length; i++) {
+                    if (guess[i] === letter) {
+                        const status = getLetterStatus(letter, i, guess);
+                        if (status === 'correct') return 'correct';
+                        if (status === 'present') bestStatus = 'present';
+                        if (status === 'absent' && !bestStatus) bestStatus = 'absent';
                     }
-                });
-            });
-            return status;
+                }
+            }
+            
+            return bestStatus;
         }
 
         function handleKey(key) {
@@ -847,27 +906,35 @@
             } else if (key === '⌫' || key === 'BACKSPACE') {
                 state.currentGuess = state.currentGuess.slice(0, -1);
                 updateGrid();
-            } else if (key.length === 1 && /[A-Z]/.test(key) && state.currentGuess.length < state.gridSize) {
-                state.currentGuess += key;
+            } else if (key.length === 1 && /[A-Z]/i.test(key) && state.currentGuess.length < state.gridSize) {
+                state.currentGuess += key.toUpperCase();
                 updateGrid();
+                
+                // Add pop animation to current cell
+                const cell = document.getElementById(`cell-${state.guesses.length}-${state.currentGuess.length - 1}`);
+                if (cell) {
+                    cell.classList.add('pop');
+                    setTimeout(() => cell.classList.remove('pop'), 150);
+                }
             }
         }
 
         function submitGuess() {
             if (state.currentGuess.length !== state.gridSize) {
                 shakeCurrentRow();
-                showMessage(`Word must be ${state.gridSize} letters`);
+                showMessage(`Word must be ${state.gridSize} letters! ✏️`);
                 return;
             }
 
             if (state.guesses.includes(state.currentGuess)) {
                 shakeCurrentRow();
-                showMessage('Already guessed!');
+                showMessage('Already guessed! 🤔');
                 return;
             }
 
             state.guesses.push(state.currentGuess);
-
+            
+            // Check win/loss
             if (state.currentGuess === state.targetWord) {
                 state.gameStatus = 'won';
                 state.points = calculatePoints();
@@ -876,23 +943,23 @@
                 state.stats[state.gridSize][state.difficulty].streak++;
                 saveStats();
                 
-                setTimeout(() => showResult(true), 500);
-                
-                // Haptic feedback
+                // Haptic
                 if (window.Telegram?.WebApp?.HapticFeedback) {
                     window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
                 }
+                
+                setTimeout(() => showResult(true), 600);
             } else if (state.guesses.length >= 6) {
                 state.gameStatus = 'lost';
                 state.stats[state.gridSize][state.difficulty].played++;
                 state.stats[state.gridSize][state.difficulty].streak = 0;
                 saveStats();
                 
-                setTimeout(() => showResult(false), 500);
-                
                 if (window.Telegram?.WebApp?.HapticFeedback) {
                     window.Telegram.WebApp.HapticFeedback.notificationOccurred('error');
                 }
+                
+                setTimeout(() => showResult(false), 600);
             }
 
             state.currentGuess = '';
@@ -903,7 +970,12 @@
         }
 
         function calculatePoints() {
-            const base = { 3: { easy: 50, medium: 100, hard: 150 }, 4: { easy: 75, medium: 150, hard: 225 }, 5: { easy: 100, medium: 200, hard: 300 }, 6: { easy: 125, medium: 250, hard: 375 } };
+            const base = {
+                3: { easy: 50, medium: 100, hard: 150 },
+                4: { easy: 75, medium: 150, hard: 225 },
+                5: { easy: 100, medium: 200, hard: 300 },
+                6: { easy: 125, medium: 250, hard: 375 }
+            };
             return base[state.gridSize][state.difficulty] * (7 - state.guesses.length);
         }
 
@@ -911,7 +983,7 @@
             const row = document.getElementById(`row-${state.guesses.length}`);
             if (row) {
                 row.classList.add('shake');
-                setTimeout(() => row.classList.remove('shake'), 500);
+                setTimeout(() => row.classList.remove('shake'), 400);
             }
         }
 
@@ -923,24 +995,26 @@
         }
 
         function showResult(won) {
-            const panel = document.getElementById('resultPanel');
             document.getElementById('resultEmoji').textContent = won ? '🎉' : '😢';
             document.getElementById('resultTitle').textContent = won ? 'Amazing!' : 'Game Over';
             document.getElementById('resultTitle').className = `result-title ${won ? 'won' : 'lost'}`;
-            document.getElementById('resultText').textContent = won ? `You found the word in ${state.guesses.length} tries!` : 'The word was:';
+            document.getElementById('resultText').textContent = won 
+                ? `You got it in ${state.guesses.length} ${state.guesses.length === 1 ? 'try' : 'tries'}!` 
+                : 'The word was:';
             
             const wordEl = document.getElementById('resultWord');
-            if (!won) {
+            if (won) {
+                wordEl.classList.add('hidden');
+            } else {
                 wordEl.textContent = state.targetWord;
                 wordEl.classList.remove('hidden');
-            } else {
-                wordEl.classList.add('hidden');
             }
             
-            document.getElementById('resultPoints').textContent = won ? `+${state.points} points` : '';
-            panel.classList.remove('hidden');
+            document.getElementById('resultPoints').textContent = won ? `+${state.points} points 🏆` : '';
+            document.getElementById('resultPanel').classList.remove('hidden');
         }
 
+        // ============ GAME CONTROLS ============
         function resetGame() {
             state.guesses = [];
             state.currentGuess = '';
@@ -957,46 +1031,54 @@
         }
 
         function changeSize(size) {
+            if (size === state.gridSize) return;
             state.gridSize = size;
-            resetGame();
+            state.guesses = [];
+            state.currentGuess = '';
+            state.gameStatus = 'playing';
+            selectNewWord();
+            renderGrid();
             renderSettingsButtons();
-            closeSettings();
+            updateKeyboard();
+            renderAttemptDots();
+            updateUI();
         }
 
         function changeDifficulty(diff) {
+            if (diff === state.difficulty) return;
             state.difficulty = diff;
-            resetGame();
+            state.guesses = [];
+            state.currentGuess = '';
+            state.gameStatus = 'playing';
+            selectNewWord();
+            renderGrid();
             renderSettingsButtons();
-            closeSettings();
+            updateKeyboard();
+            renderAttemptDots();
+            updateUI();
         }
 
         function shareResult() {
             let grid = '';
             state.guesses.forEach(guess => {
-                guess.split('').forEach((letter, i) => {
-                    const status = getLetterStatus(letter, i, guess);
+                for (let i = 0; i < guess.length; i++) {
+                    const status = getLetterStatus(guess[i], i, guess);
                     grid += status === 'correct' ? '🟦' : status === 'present' ? '🟨' : '⬜';
-                });
+                }
                 grid += '\n';
             });
 
-            const text = `${state.gameStatus === 'won' ? '🎉' : '😢'} Wordle ${state.gridSize}×6 ${state.gameStatus === 'won' ? state.guesses.length + '/6' : 'X/6'}\n${state.difficulty}\n\n${grid}`;
+            const statusText = state.gameStatus === 'won' ? `${state.guesses.length}/6` : 'X/6';
+            const text = `🎮 Wordle ${state.gridSize}×6 ${statusText}\n📊 ${state.difficulty}\n\n${grid}\n🎯 Play: t.me/wordletgapp_bot/wordle`;
 
             if (window.Telegram?.WebApp) {
-                window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent('https://t.me/wordletgapp_bot/wordle')}&text=${encodeURIComponent(text)}`);
+                const shareUrl = `https://t.me/share/url?url=${encodeURIComponent('https://t.me/wordletgapp_bot/wordle')}&text=${encodeURIComponent(text)}`;
+                window.Telegram.WebApp.openTelegramLink(shareUrl);
             } else if (navigator.share) {
-                navigator.share({ text }).catch(() => copyText(text));
-            } else {
-                copyText(text);
+                navigator.share({ text }).catch(() => {});
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => showMessage('📋 Copied!'));
             }
-        }
-
-        function copyText(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showMessage('📋 Copied!');
-            }).catch(() => {
-                showMessage('Could not copy');
-            });
         }
 
         // ============ MODALS ============
@@ -1013,16 +1095,16 @@
             document.getElementById('settingsModal').classList.add('hidden');
         }
 
-        // ============ EVENT LISTENERS ============
+        // ============ EVENTS ============
         function setupEventListeners() {
             document.getElementById('helpBtn').addEventListener('click', toggleInstructions);
             document.getElementById('settingsBtn').addEventListener('click', openSettings);
             document.getElementById('statsBtn').addEventListener('click', openSettings);
 
-            // Keyboard
+            // Physical keyboard
             document.addEventListener('keydown', (e) => {
                 if (state.gameStatus !== 'playing') return;
-                if (document.querySelector('.modal:not(.hidden)')) return;
+                if (!document.getElementById('settingsModal').classList.contains('hidden')) return;
 
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -1036,11 +1118,9 @@
                 }
             });
 
-            // Close modal on backdrop click
+            // Close modal on backdrop
             document.getElementById('settingsModal').addEventListener('click', (e) => {
-                if (e.target.id === 'settingsModal') {
-                    closeSettings();
-                }
+                if (e.target.id === 'settingsModal') closeSettings();
             });
         }
 
