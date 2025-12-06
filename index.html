@@ -129,7 +129,6 @@
             border-color: rgba(255,255,255,0.6);
             background: rgba(255,255,255,0.15);
             transform: scale(1.05);
-            animation: pop 0.1s ease;
         }
         
         .cell.correct {
@@ -148,22 +147,6 @@
             border-color: #6b7280;
         }
         
-        .cell.reveal {
-            animation: flip 0.5s ease forwards;
-        }
-        
-        @keyframes flip {
-            0% { transform: rotateX(0); }
-            50% { transform: rotateX(90deg); }
-            100% { transform: rotateX(0); }
-        }
-        
-        @keyframes pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1.05); }
-        }
-        
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             20% { transform: translateX(-8px); }
@@ -172,17 +155,8 @@
             80% { transform: translateX(8px); }
         }
         
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
         .row.shake {
             animation: shake 0.4s ease;
-        }
-        
-        .cell.bounce {
-            animation: bounce 0.5s ease;
         }
         
         .keyboard {
@@ -216,16 +190,8 @@
             max-width: 40px;
         }
         
-        .key:active {
-            transform: scale(0.95);
-        }
-        
-        .key.wide {
-            min-width: 55px;
-            max-width: 65px;
-            font-size: 12px;
-        }
-        
+        .key:active { transform: scale(0.95); }
+        .key.wide { min-width: 55px; max-width: 65px; font-size: 12px; }
         .key.correct { background: #3b82f6; }
         .key.present { background: #eab308; color: #000; }
         .key.absent { background: #374151; }
@@ -243,12 +209,6 @@
             font-weight: 600;
             font-size: 16px;
             z-index: 1000;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         
         .modal {
@@ -319,7 +279,7 @@
             display: none;
         }
         
-        .result-panel.show { display: block; animation: fadeIn 0.5s ease; }
+        .result-panel.show { display: block; }
         
         .result-emoji { font-size: 72px; margin-bottom: 16px; }
         .result-title { font-size: 28px; font-weight: bold; margin-bottom: 8px; }
@@ -343,7 +303,6 @@
             cursor: pointer;
             background: rgba(255,255,255,0.05);
             color: white;
-            transition: all 0.2s;
         }
         
         .settings-btn.active {
@@ -364,7 +323,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.2s;
         }
         
         .diff-btn.active {
@@ -391,7 +349,6 @@
             height: 14px;
             border-radius: 50%;
             background: rgba(255,255,255,0.2);
-            transition: all 0.3s;
         }
         
         .attempt-dot.used { background: #ef4444; }
@@ -406,7 +363,7 @@
             display: none;
         }
         
-        .instructions.show { display: block; animation: fadeIn 0.3s ease; }
+        .instructions.show { display: block; }
         .instructions h3 { margin-bottom: 16px; font-size: 20px; }
         .instructions ul { list-style: none; }
         .instructions li { margin-bottom: 12px; font-size: 15px; }
@@ -423,9 +380,6 @@
         .color-sample.yellow { background: #eab308; color: #000; }
         .color-sample.gray { background: #4b5563; }
         
-        /* Leaderboard */
-        .leaderboard { margin-top: 20px; }
-        .leaderboard h3 { margin-bottom: 12px; font-size: 18px; }
         .leaderboard-item {
             display: flex;
             justify-content: space-between;
@@ -447,11 +401,11 @@
     <div id="app">
         <div class="header">
             <div style="display: flex; gap: 8px;">
-                <button class="header-btn" id="helpBtn" type="button">💡</button>
-                <button class="header-btn" id="settingsBtn" type="button">⚙️</button>
+                <button class="header-btn" id="btn-help" type="button">💡</button>
+                <button class="header-btn" id="btn-settings" type="button">⚙️</button>
             </div>
             <h1>WORDLE</h1>
-            <button class="header-btn" id="leaderboardBtn" type="button">🏆</button>
+            <button class="header-btn" id="btn-leaderboard" type="button">🏆</button>
         </div>
         
         <div class="game-info">
@@ -468,7 +422,7 @@
                 <li>• <span class="color-sample yellow">Yellow</span> = correct letter, wrong spot</li>
                 <li>• <span class="color-sample gray">Gray</span> = letter not in word</li>
             </ul>
-            <button class="btn btn-secondary" id="closeInstructionsBtn" type="button">Got it! 👍</button>
+            <button class="btn btn-secondary" id="btn-close-instructions" type="button">Got it! 👍</button>
         </div>
         
         <div class="grid-container">
@@ -482,8 +436,8 @@
             <div class="result-word" id="resultWord" style="display:none;"></div>
             <div class="result-points" id="resultPoints"></div>
             <div class="result-buttons">
-                <button class="btn btn-success" id="shareBtn" type="button">📤 Share</button>
-                <button class="btn btn-primary" id="playAgainBtn" type="button">🔄 Play Again</button>
+                <button class="btn btn-success" id="btn-share" type="button">📤 Share</button>
+                <button class="btn btn-primary" id="btn-play-again" type="button">🔄 Play Again</button>
             </div>
         </div>
         
@@ -495,7 +449,6 @@
         </div>
     </div>
     
-    <!-- Settings Modal -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <h2>⚙️ Settings</h2>
@@ -507,16 +460,15 @@
                 <div class="settings-label">Difficulty</div>
                 <div class="diff-buttons" id="diffButtons"></div>
             </div>
-            <button class="btn btn-primary" id="closeSettingsBtn" type="button">Done ✓</button>
+            <button class="btn btn-primary" id="btn-close-settings" type="button">Done ✓</button>
         </div>
     </div>
     
-    <!-- Leaderboard Modal -->
     <div class="modal" id="leaderboardModal">
         <div class="modal-content">
             <h2>🏆 Leaderboard</h2>
-            <div class="leaderboard" id="leaderboardList"></div>
-            <button class="btn btn-primary" id="closeLeaderboardBtn" type="button">Close</button>
+            <div id="leaderboardList"></div>
+            <button class="btn btn-primary" id="btn-close-leaderboard" type="button">Close</button>
         </div>
     </div>
     
@@ -562,9 +514,6 @@
 
         // ===================== INITIALIZATION =====================
         function init() {
-            console.log('Initializing game...');
-            
-            // Telegram WebApp
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.ready();
                 window.Telegram.WebApp.expand();
@@ -574,25 +523,20 @@
             selectNewWord();
             renderAll();
             setupEventListeners();
-            
-            console.log('Game initialized! Target word:', state.targetWord);
         }
 
         function loadData() {
-            // Load stats
             try {
                 const savedStats = localStorage.getItem('wordleStats');
-                if (savedStats) {
-                    state.stats = JSON.parse(savedStats);
-                }
-            } catch (e) {
-                console.log('Could not load stats');
-            }
+                if (savedStats) state.stats = JSON.parse(savedStats);
+                
+                const savedLeaderboard = localStorage.getItem('wordleLeaderboard');
+                if (savedLeaderboard) state.leaderboard = JSON.parse(savedLeaderboard);
+            } catch (e) {}
             
-            // Initialize stats if needed
             if (!state.stats || !state.stats[3]) {
                 state.stats = {};
-                [3, 4, 5, 6].forEach(s => {
+                [3, 4, 5, 6].forEach(function(s) {
                     state.stats[s] = {
                         easy: { played: 0, won: 0, streak: 0, bestScore: 0 },
                         medium: { played: 0, won: 0, streak: 0, bestScore: 0 },
@@ -601,30 +545,19 @@
                 });
             }
             
-            // Load leaderboard
-            try {
-                const savedLeaderboard = localStorage.getItem('wordleLeaderboard');
-                if (savedLeaderboard) {
-                    state.leaderboard = JSON.parse(savedLeaderboard);
-                }
-            } catch (e) {
-                state.leaderboard = [];
-            }
+            if (!state.leaderboard) state.leaderboard = [];
         }
 
         function saveData() {
             try {
                 localStorage.setItem('wordleStats', JSON.stringify(state.stats));
                 localStorage.setItem('wordleLeaderboard', JSON.stringify(state.leaderboard));
-            } catch (e) {
-                console.log('Could not save data');
-            }
+            } catch (e) {}
         }
 
         function selectNewWord() {
-            const words = WORDS[state.gridSize][state.difficulty];
+            var words = WORDS[state.gridSize][state.difficulty];
             state.targetWord = words[Math.floor(Math.random() * words.length)];
-            console.log('New word selected:', state.targetWord);
         }
 
         // ===================== RENDERING =====================
@@ -636,22 +569,22 @@
         }
 
         function renderGrid() {
-            const grid = document.getElementById('grid');
+            var grid = document.getElementById('grid');
             grid.innerHTML = '';
             grid.className = 'grid size-' + state.gridSize;
 
-            for (let r = 0; r < 6; r++) {
-                const row = document.createElement('div');
+            for (var r = 0; r < 6; r++) {
+                var row = document.createElement('div');
                 row.className = 'row';
                 row.id = 'row-' + r;
 
-                for (let c = 0; c < state.gridSize; c++) {
-                    const cell = document.createElement('div');
+                for (var c = 0; c < state.gridSize; c++) {
+                    var cell = document.createElement('div');
                     cell.className = 'cell';
                     cell.id = 'cell-' + r + '-' + c;
                     
                     if (r < state.guesses.length) {
-                        const letter = state.guesses[r][c];
+                        var letter = state.guesses[r][c];
                         cell.textContent = letter;
                         cell.classList.add(getLetterStatus(letter, c, state.guesses[r]));
                     } else if (r === state.guesses.length && c < state.currentGuess.length) {
@@ -666,38 +599,34 @@
         }
 
         function renderKeyboard() {
-            const kb = document.getElementById('keyboard');
+            var kb = document.getElementById('keyboard');
             kb.innerHTML = '';
             
-            const rows = [
+            var rows = [
                 ['Q','W','E','R','T','Y','U','I','O','P'],
                 ['A','S','D','F','G','H','J','K','L'],
                 ['ENTER','Z','X','C','V','B','N','M','⌫']
             ];
 
-            rows.forEach(row => {
-                const rowDiv = document.createElement('div');
+            rows.forEach(function(row) {
+                var rowDiv = document.createElement('div');
                 rowDiv.className = 'keyboard-row';
                 
-                row.forEach(key => {
-                    const btn = document.createElement('button');
+                row.forEach(function(key) {
+                    var btn = document.createElement('button');
                     btn.className = 'key';
                     btn.textContent = key;
                     btn.type = 'button';
                     
-                    if (key === 'ENTER' || key === '⌫') {
-                        btn.classList.add('wide');
-                    }
+                    if (key === 'ENTER' || key === '⌫') btn.classList.add('wide');
                     
-                    // Add keyboard status colors
                     if (key.length === 1) {
-                        const status = getKeyboardStatus(key);
+                        var status = getKeyboardStatus(key);
                         if (status) btn.classList.add(status);
                     }
                     
                     btn.disabled = state.gameStatus !== 'playing';
                     
-                    // Click handler
                     btn.addEventListener('click', function() {
                         handleKeyPress(key);
                     });
@@ -710,11 +639,11 @@
         }
 
         function renderAttemptDots() {
-            const container = document.getElementById('attemptDots');
+            var container = document.getElementById('attemptDots');
             container.innerHTML = '';
             
-            for (let i = 0; i < 6; i++) {
-                const dot = document.createElement('div');
+            for (var i = 0; i < 6; i++) {
+                var dot = document.createElement('div');
                 dot.className = 'attempt-dot';
                 
                 if (i < state.guesses.length) {
@@ -729,26 +658,22 @@
         }
 
         function updateUI() {
-            // Difficulty badge
-            const badge = document.getElementById('diffBadge');
+            var badge = document.getElementById('diffBadge');
             badge.textContent = state.difficulty.charAt(0).toUpperCase() + state.difficulty.slice(1);
             badge.className = 'info-badge ' + state.difficulty;
             
-            // Size badge
             document.getElementById('sizeBadge').textContent = state.gridSize + '×6';
             
-            // Streak badge
-            const currentStats = state.stats[state.gridSize][state.difficulty];
+            var currentStats = state.stats[state.gridSize][state.difficulty];
             document.getElementById('streakBadge').textContent = '🔥 ' + currentStats.streak;
         }
 
         function renderSettingsModal() {
-            // Size buttons
-            const sizeDiv = document.getElementById('sizeButtons');
+            var sizeDiv = document.getElementById('sizeButtons');
             sizeDiv.innerHTML = '';
             
-            [3, 4, 5, 6].forEach(size => {
-                const btn = document.createElement('button');
+            [3, 4, 5, 6].forEach(function(size) {
+                var btn = document.createElement('button');
                 btn.className = 'settings-btn' + (state.gridSize === size ? ' active' : '');
                 btn.textContent = size + '×6';
                 btn.type = 'button';
@@ -758,23 +683,22 @@
                 sizeDiv.appendChild(btn);
             });
 
-            // Difficulty buttons
-            const diffDiv = document.getElementById('diffButtons');
+            var diffDiv = document.getElementById('diffButtons');
             diffDiv.innerHTML = '';
             
-            const diffConfig = [
+            var diffConfig = [
                 { key: 'easy', emoji: '⭐', label: 'Easy' },
                 { key: 'medium', emoji: '⚡', label: 'Medium' },
                 { key: 'hard', emoji: '🔥', label: 'Hard' }
             ];
             
-            diffConfig.forEach(diff => {
-                const btn = document.createElement('button');
+            diffConfig.forEach(function(diff) {
+                var btn = document.createElement('button');
                 btn.className = 'diff-btn' + (state.difficulty === diff.key ? ' active' : '');
                 btn.type = 'button';
                 
-                const stats = state.stats[state.gridSize][diff.key];
-                btn.innerHTML = '<span>' + diff.emoji + ' ' + diff.label + '</span><span class="stats">' + stats.won + '/' + stats.played + ' wins</span>';
+                var stats = state.stats[state.gridSize][diff.key];
+                btn.innerHTML = '<span>' + diff.emoji + ' ' + diff.label + '</span><span class="stats">' + stats.won + '/' + stats.played + '</span>';
                 
                 btn.addEventListener('click', function() {
                     changeDifficulty(diff.key);
@@ -784,28 +708,28 @@
         }
 
         function renderLeaderboard() {
-            const list = document.getElementById('leaderboardList');
+            var list = document.getElementById('leaderboardList');
             list.innerHTML = '';
             
             if (state.leaderboard.length === 0) {
-                list.innerHTML = '<p style="text-align:center;opacity:0.6;">No scores yet. Play to get on the board!</p>';
+                list.innerHTML = '<p style="text-align:center;opacity:0.6;padding:20px;">No scores yet.<br>Play to get on the board! 🎮</p>';
                 return;
             }
             
-            const sorted = [...state.leaderboard].sort((a, b) => b.score - a.score).slice(0, 10);
+            var sorted = state.leaderboard.slice().sort(function(a, b) { return b.score - a.score; }).slice(0, 10);
             
-            sorted.forEach((entry, index) => {
-                const item = document.createElement('div');
+            sorted.forEach(function(entry, index) {
+                var item = document.createElement('div');
                 item.className = 'leaderboard-item';
                 
                 if (index === 0) item.classList.add('gold');
                 else if (index === 1) item.classList.add('silver');
                 else if (index === 2) item.classList.add('bronze');
                 
-                const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1) + '.';
+                var rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1) + '.';
                 
                 item.innerHTML = '<span class="leaderboard-rank">' + rankEmoji + '</span>' +
-                    '<span class="leaderboard-name">' + entry.word + ' (' + entry.difficulty + ')</span>' +
+                    '<span class="leaderboard-name">' + entry.word + ' (' + entry.tries + ' tries)</span>' +
                     '<span class="leaderboard-score">' + entry.score + '</span>';
                 
                 list.appendChild(item);
@@ -815,17 +739,18 @@
         // ===================== GAME LOGIC =====================
         function getLetterStatus(letter, index, guess) {
             if (state.targetWord[index] === letter) return 'correct';
-            if (state.targetWord.includes(letter)) return 'present';
+            if (state.targetWord.indexOf(letter) !== -1) return 'present';
             return 'absent';
         }
 
         function getKeyboardStatus(letter) {
-            let bestStatus = null;
+            var bestStatus = null;
             
-            for (const guess of state.guesses) {
-                for (let i = 0; i < guess.length; i++) {
+            for (var g = 0; g < state.guesses.length; g++) {
+                var guess = state.guesses[g];
+                for (var i = 0; i < guess.length; i++) {
                     if (guess[i] === letter) {
-                        const status = getLetterStatus(letter, i, guess);
+                        var status = getLetterStatus(letter, i, guess);
                         if (status === 'correct') return 'correct';
                         if (status === 'present' && bestStatus !== 'correct') bestStatus = 'present';
                         if (status === 'absent' && !bestStatus) bestStatus = 'absent';
@@ -837,12 +762,7 @@
         }
 
         function handleKeyPress(key) {
-            console.log('Key pressed:', key, 'Game status:', state.gameStatus);
-            
-            if (state.gameStatus !== 'playing') {
-                console.log('Game not playing, ignoring input');
-                return;
-            }
+            if (state.gameStatus !== 'playing') return;
             
             if (key === 'ENTER') {
                 submitGuess();
@@ -858,33 +778,25 @@
         }
 
         function submitGuess() {
-            console.log('Submitting guess:', state.currentGuess, 'Target:', state.targetWord);
-            
-            // Check length
             if (state.currentGuess.length !== state.gridSize) {
                 shakeCurrentRow();
                 showMessage('Need ' + state.gridSize + ' letters! ✏️');
                 return;
             }
             
-            // Check if already guessed
-            if (state.guesses.includes(state.currentGuess)) {
+            if (state.guesses.indexOf(state.currentGuess) !== -1) {
                 shakeCurrentRow();
                 showMessage('Already tried! 🤔');
                 return;
             }
 
-            // Add guess
             state.guesses.push(state.currentGuess);
             
-            // Check for win
             if (state.currentGuess === state.targetWord) {
-                console.log('WINNER!');
                 state.gameStatus = 'won';
                 state.points = calculatePoints();
                 
-                // Update stats
-                const currentStats = state.stats[state.gridSize][state.difficulty];
+                var currentStats = state.stats[state.gridSize][state.difficulty];
                 currentStats.played++;
                 currentStats.won++;
                 currentStats.streak++;
@@ -892,7 +804,6 @@
                     currentStats.bestScore = state.points;
                 }
                 
-                // Add to leaderboard
                 state.leaderboard.push({
                     word: state.targetWord,
                     score: state.points,
@@ -904,35 +815,26 @@
                 
                 saveData();
                 
-                // Haptic feedback
-                if (window.Telegram?.WebApp?.HapticFeedback) {
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
                     window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
                 }
                 
-                // Show result after animation
-                setTimeout(function() {
-                    showResult(true);
-                }, 600);
+                setTimeout(function() { showResult(true); }, 500);
                 
             } else if (state.guesses.length >= 6) {
-                console.log('GAME OVER');
                 state.gameStatus = 'lost';
                 
-                // Update stats
-                const currentStats = state.stats[state.gridSize][state.difficulty];
+                var currentStats = state.stats[state.gridSize][state.difficulty];
                 currentStats.played++;
                 currentStats.streak = 0;
                 
                 saveData();
                 
-                // Haptic feedback
-                if (window.Telegram?.WebApp?.HapticFeedback) {
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
                     window.Telegram.WebApp.HapticFeedback.notificationOccurred('error');
                 }
                 
-                setTimeout(function() {
-                    showResult(false);
-                }, 600);
+                setTimeout(function() { showResult(false); }, 500);
             }
 
             state.currentGuess = '';
@@ -940,36 +842,29 @@
         }
 
         function calculatePoints() {
-            const basePoints = { 3: 100, 4: 150, 5: 200, 6: 250 };
-            const multiplier = { easy: 1, medium: 2, hard: 3 };
-            const triesBonus = 7 - state.guesses.length;
+            var basePoints = { 3: 100, 4: 150, 5: 200, 6: 250 };
+            var multiplier = { easy: 1, medium: 2, hard: 3 };
+            var triesBonus = 7 - state.guesses.length;
             return basePoints[state.gridSize] * multiplier[state.difficulty] * triesBonus;
         }
 
         function shakeCurrentRow() {
-            const rowIndex = state.guesses.length;
-            const row = document.getElementById('row-' + rowIndex);
+            var rowIndex = state.guesses.length;
+            var row = document.getElementById('row-' + rowIndex);
             if (row) {
                 row.classList.add('shake');
-                setTimeout(function() {
-                    row.classList.remove('shake');
-                }, 400);
+                setTimeout(function() { row.classList.remove('shake'); }, 400);
             }
         }
 
         function showMessage(text) {
-            const msg = document.getElementById('message');
+            var msg = document.getElementById('message');
             msg.textContent = text;
             msg.style.display = 'block';
-            
-            setTimeout(function() {
-                msg.style.display = 'none';
-            }, 2000);
+            setTimeout(function() { msg.style.display = 'none'; }, 2000);
         }
 
         function showResult(won) {
-            console.log('Showing result:', won ? 'WON' : 'LOST');
-            
             document.getElementById('resultEmoji').textContent = won ? '🎉' : '😢';
             document.getElementById('resultTitle').textContent = won ? 'Amazing!' : 'Game Over';
             document.getElementById('resultTitle').className = 'result-title ' + (won ? 'won' : 'lost');
@@ -977,7 +872,7 @@
                 ? 'You got it in ' + state.guesses.length + ' ' + (state.guesses.length === 1 ? 'try' : 'tries') + '!'
                 : 'The word was:';
             
-            const wordEl = document.getElementById('resultWord');
+            var wordEl = document.getElementById('resultWord');
             if (won) {
                 wordEl.style.display = 'none';
             } else {
@@ -985,30 +880,22 @@
                 wordEl.style.display = 'block';
             }
             
-            document.getElementById('resultPoints').textContent = won ? '+' + state.points + ' points 🏆' : '';
+            document.getElementById('resultPoints').textContent = won ? '+' + state.points + ' pts 🏆' : '';
             document.getElementById('resultPanel').classList.add('show');
         }
 
-        function hideResult() {
-            document.getElementById('resultPanel').classList.remove('show');
-        }
-
         function resetGame() {
-            console.log('Resetting game...');
             state.guesses = [];
             state.currentGuess = '';
             state.gameStatus = 'playing';
             state.points = 0;
             
-            hideResult();
+            document.getElementById('resultPanel').classList.remove('show');
             selectNewWord();
             renderAll();
-            
-            console.log('Game reset! New word:', state.targetWord);
         }
 
         function changeGridSize(newSize) {
-            console.log('Changing grid size to:', newSize);
             state.gridSize = newSize;
             state.guesses = [];
             state.currentGuess = '';
@@ -1019,7 +906,6 @@
         }
 
         function changeDifficulty(newDiff) {
-            console.log('Changing difficulty to:', newDiff);
             state.difficulty = newDiff;
             state.guesses = [];
             state.currentGuess = '';
@@ -1029,135 +915,145 @@
             renderSettingsModal();
         }
 
+        // ===================== SHARE FUNCTION - FIXED =====================
         function shareResult() {
-            let grid = '';
-            state.guesses.forEach(function(guess) {
-                for (let i = 0; i < guess.length; i++) {
-                    const status = getLetterStatus(guess[i], i, guess);
-                    grid += status === 'correct' ? '🟦' : status === 'present' ? '🟨' : '⬜';
+            var grid = '';
+            for (var g = 0; g < state.guesses.length; g++) {
+                var guess = state.guesses[g];
+                for (var i = 0; i < guess.length; i++) {
+                    var status = getLetterStatus(guess[i], i, guess);
+                    if (status === 'correct') grid += '🟦';
+                    else if (status === 'present') grid += '🟨';
+                    else grid += '⬜';
                 }
                 grid += '\n';
-            });
-            
-            const statusText = state.gameStatus === 'won' ? state.guesses.length + '/6' : 'X/6';
-            const text = '🎮 Wordle ' + state.gridSize + '×6 ' + statusText + '\n' +
-                '📊 ' + state.difficulty.charAt(0).toUpperCase() + state.difficulty.slice(1) + '\n' +
-                (state.gameStatus === 'won' ? '🏆 ' + state.points + ' points\n' : '') +
-                '\n' + grid + '\n' +
-                '🎯 Play: t.me/wordletgapp_bot/wordle';
-            
-            if (window.Telegram?.WebApp) {
-                window.Telegram.WebApp.openTelegramLink('https://t.me/share/url?text=' + encodeURIComponent(text));
-            } else if (navigator.share) {
-                navigator.share({ text: text }).catch(function() {});
-            } else if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(function() {
-                    showMessage('📋 Copied to clipboard!');
-                });
             }
+            
+            var statusText = state.gameStatus === 'won' ? state.guesses.length + '/6' : 'X/6';
+            var pointsText = state.gameStatus === 'won' ? '\n🏆 ' + state.points + ' points' : '';
+            
+            var text = '🎮 Wordle ' + state.gridSize + '×6 ' + statusText + 
+                '\n📊 ' + state.difficulty.charAt(0).toUpperCase() + state.difficulty.slice(1) + 
+                pointsText + '\n\n' + grid;
+            
+            // Копируем в буфер обмена и показываем сообщение
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showMessage('📋 Copied! Share it in chat!');
+                }).catch(function() {
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+        
+        function fallbackCopy(text) {
+            // Создаём временный textarea для копирования
+            var textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showMessage('📋 Copied! Share it in chat!');
+            } catch (e) {
+                showMessage('Could not copy 😕');
+            }
+            
+            document.body.removeChild(textarea);
         }
 
         // ===================== MODAL FUNCTIONS =====================
-        function openInstructions() {
-            console.log('Opening instructions');
-            document.getElementById('instructions').classList.add('show');
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
         }
 
-        function closeInstructions() {
-            console.log('Closing instructions');
-            document.getElementById('instructions').classList.remove('show');
-        }
-
-        function openSettings() {
-            console.log('Opening settings');
-            renderSettingsModal();
-            document.getElementById('settingsModal').classList.add('show');
-        }
-
-        function closeSettings() {
-            console.log('Closing settings');
-            document.getElementById('settingsModal').classList.remove('show');
-        }
-
-        function openLeaderboard() {
-            console.log('Opening leaderboard');
-            renderLeaderboard();
-            document.getElementById('leaderboardModal').classList.add('show');
-        }
-
-        function closeLeaderboard() {
-            console.log('Closing leaderboard');
-            document.getElementById('leaderboardModal').classList.remove('show');
-        }
-
-        // ===================== EVENT LISTENERS =====================
+        // ===================== EVENT LISTENERS - FIXED =====================
         function setupEventListeners() {
-            console.log('Setting up event listeners...');
-            
-            // Header buttons
-            document.getElementById('helpBtn').addEventListener('click', function(e) {
+            // Help button
+            document.getElementById('btn-help').addEventListener('click', function(e) {
                 e.preventDefault();
-                console.log('Help button clicked');
-                openInstructions();
+                e.stopPropagation();
+                var instr = document.getElementById('instructions');
+                if (instr.classList.contains('show')) {
+                    instr.classList.remove('show');
+                } else {
+                    instr.classList.add('show');
+                }
             });
             
-            document.getElementById('settingsBtn').addEventListener('click', function(e) {
+            // Settings button
+            document.getElementById('btn-settings').addEventListener('click', function(e) {
                 e.preventDefault();
-                console.log('Settings button clicked');
-                openSettings();
+                e.stopPropagation();
+                renderSettingsModal();
+                openModal('settingsModal');
             });
             
-            document.getElementById('leaderboardBtn').addEventListener('click', function(e) {
+            // Leaderboard button - FIXED: now opens leaderboard, not settings
+            document.getElementById('btn-leaderboard').addEventListener('click', function(e) {
                 e.preventDefault();
-                console.log('Leaderboard button clicked');
-                openLeaderboard();
+                e.stopPropagation();
+                renderLeaderboard();
+                openModal('leaderboardModal');
             });
             
-            // Close buttons
-            document.getElementById('closeInstructionsBtn').addEventListener('click', function(e) {
+            // Close instructions
+            document.getElementById('btn-close-instructions').addEventListener('click', function(e) {
                 e.preventDefault();
-                closeInstructions();
+                document.getElementById('instructions').classList.remove('show');
             });
             
-            document.getElementById('closeSettingsBtn').addEventListener('click', function(e) {
+            // Close settings
+            document.getElementById('btn-close-settings').addEventListener('click', function(e) {
                 e.preventDefault();
-                closeSettings();
+                closeModal('settingsModal');
             });
             
-            document.getElementById('closeLeaderboardBtn').addEventListener('click', function(e) {
+            // Close leaderboard
+            document.getElementById('btn-close-leaderboard').addEventListener('click', function(e) {
                 e.preventDefault();
-                closeLeaderboard();
+                closeModal('leaderboardModal');
             });
             
-            // Result panel buttons
-            document.getElementById('shareBtn').addEventListener('click', function(e) {
+            // Share button - FIXED
+            document.getElementById('btn-share').addEventListener('click', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
                 shareResult();
             });
             
-            document.getElementById('playAgainBtn').addEventListener('click', function(e) {
+            // Play again button
+            document.getElementById('btn-play-again').addEventListener('click', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
                 resetGame();
             });
             
             // Modal backdrop clicks
             document.getElementById('settingsModal').addEventListener('click', function(e) {
                 if (e.target.id === 'settingsModal') {
-                    closeSettings();
+                    closeModal('settingsModal');
                 }
             });
             
             document.getElementById('leaderboardModal').addEventListener('click', function(e) {
                 if (e.target.id === 'leaderboardModal') {
-                    closeLeaderboard();
+                    closeModal('leaderboardModal');
                 }
             });
             
             // Physical keyboard
             document.addEventListener('keydown', function(e) {
                 if (state.gameStatus !== 'playing') return;
-                
-                // Don't handle if modal is open
                 if (document.getElementById('settingsModal').classList.contains('show')) return;
                 if (document.getElementById('leaderboardModal').classList.contains('show')) return;
                 
@@ -1172,11 +1068,9 @@
                     handleKeyPress(e.key.toUpperCase());
                 }
             });
-            
-            console.log('Event listeners set up complete!');
         }
 
-        // ===================== START GAME =====================
+        // ===================== START =====================
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
