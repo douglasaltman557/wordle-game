@@ -46,548 +46,707 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // Lucide Icons as SVG components
-        const Check = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-        );
+const Check = ({ size = 24 }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+);
 
-        const Delete = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
-                <line x1="18" y1="9" x2="12" y2="15"></line>
-                <line x1="12" y1="9" x2="18" y2="15"></line>
-            </svg>
-        );
+const Delete = ({ size = 24 }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+        <line x1="18" y1="9" x2="12" y2="15"></line>
+        <line x1="12" y1="9" x2="18" y2="15"></line>
+    </svg>
+);
 
-        const Trophy = ({ size = 24, className = '' }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-                <path d="M4 22h16"></path>
-                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
-                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
-                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-            </svg>
-        );
+const Trophy = ({ size = 24, className = '' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+        <path d="M4 22h16"></path>
+        <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+        <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+        <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+    </svg>
+);
 
-        const Info = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="16" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-            </svg>
-        );
+const Lightbulb = ({ size = 24 }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path>
+        <path d="M9 18h6"></path>
+        <path d="M10 22h4"></path>
+    </svg>
+);
 
-        const Settings = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M12 1v6m0 6v6"></path>
-                <path d="m1 12 6 0m6 0 6 0"></path>
-            </svg>
-        );
+const Gear = ({ size = 24 }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"></path>
+    </svg>
+);
 
-        const Award = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="8" r="7"></circle>
-                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-            </svg>
-        );
+const Award = ({ size = 24 }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="8" r="7"></circle>
+        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+    </svg>
+);
 
-        const Zap = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-            </svg>
-        );
+const Zap = ({ size = 24 }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+    </svg>
+);
 
-        const Star = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-            </svg>
-        );
+const Star = ({ size = 24 }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+    </svg>
+);
 
-        const WORD_LISTS = {
-            easy: ['BREAD', 'MOUSE', 'HOUSE', 'PLANT', 'BEACH', 'DREAM', 'LIGHT', 'PAINT', 'WATCH', 'SMART'],
-            medium: ['PLUSH', 'TRAIN', 'STONE', 'WORLD', 'CREAM', 'FRESH', 'GHOST', 'JOINT', 'NIGHT', 'QUEEN', 'ROUND', 'TRUST', 'YOUTH', 'SHARP'],
-            hard: ['JAZZY', 'FIZZY', 'FUZZY', 'DIZZY', 'PROXY', 'QUARTZ', 'RHYTHM', 'GLYPH', 'NYMPH', 'CRYPT']
-        };
+const Share = ({ size = 24 }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="18" cy="5" r="3"></circle>
+        <circle cx="6" cy="12" r="3"></circle>
+        <circle cx="18" cy="19" r="3"></circle>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+    </svg>
+);
 
-        function WordleGame() {
-            const [difficulty, setDifficulty] = useState('medium');
-            const [targetWord, setTargetWord] = useState('');
-            const [guesses, setGuesses] = useState([]);
-            const [currentGuess, setCurrentGuess] = useState('');
-            const [gameStatus, setGameStatus] = useState('playing');
-            const [showInstructions, setShowInstructions] = useState(false);
-            const [showSettings, setShowSettings] = useState(false);
-            const [showLeaderboard, setShowLeaderboard] = useState(false);
-            const [stats, setStats] = useState({ easy: { played: 0, won: 0, streak: 0 }, medium: { played: 0, won: 0, streak: 0 }, hard: { played: 0, won: 0, streak: 0 } });
-            const [leaderboard, setLeaderboard] = useState([]);
-            const [playerName, setPlayerName] = useState('');
-            const [showNameInput, setShowNameInput] = useState(false);
-            const [winAnimation, setWinAnimation] = useState(false);
-            const [shakeRow, setShakeRow] = useState(false);
-            const [points, setPoints] = useState(0);
+const WORD_LISTS = {
+    3: {
+        easy: ['CAT', 'DOG', 'SUN', 'CAR', 'BAT', 'HAT', 'PEN', 'CUP', 'BOX', 'FOX', 'BED', 'EGG', 'JAR', 'KEY', 'MAP', 'BAG', 'BUS', 'TOY', 'NET', 'POT'],
+        medium: ['WAX', 'ZEN', 'JOY', 'GYM', 'SKY', 'FLY', 'SPY', 'DRY', 'FRY', 'TRY', 'WHY', 'SHY', 'BUY', 'GUY', 'DAY', 'BAY', 'LAY', 'MAY', 'PAY', 'RAY'],
+        hard: ['ZAP', 'ZOO', 'ZIP', 'ZAG', 'ZOX', 'JAM', 'JET', 'JAW', 'JOB', 'JIG', 'WAD', 'WAG', 'WEB', 'WIG', 'WOK', 'VOW', 'VEX', 'WAR', 'WOE', 'YAK']
+    },
+    4: {
+        easy: ['TREE', 'BOOK', 'DOOR', 'FISH', 'HAND', 'MOON', 'STAR', 'BIRD', 'CAKE', 'GAME', 'BALL', 'KING', 'RING', 'SONG', 'WIND', 'RAIN', 'SNOW', 'FIRE', 'HOME', 'LOVE'],
+        medium: ['BUSY', 'CALM', 'DUMP', 'FLEX', 'GANG', 'HUGE', 'JUMP', 'KIND', 'LAZY', 'MYTH', 'QUIZ', 'RARE', 'SAKE', 'TRAP', 'WALK', 'ZONE', 'BOND', 'COAL', 'DAWN', 'EARN'],
+        hard: ['WAXY', 'ZANY', 'ZERO', 'ZOOM', 'JINX', 'JUNK', 'JADE', 'JAZZ', 'FOXY', 'FLUX', 'LYNX', 'ONYX', 'AQUA', 'APEX', 'EXAM', 'PFFT', 'WHIZ', 'FIZZ', 'BUZZ', 'FUZZ']
+    },
+    5: {
+        easy: ['BREAD', 'MOUSE', 'HOUSE', 'PLANT', 'BEACH', 'DREAM', 'LIGHT', 'PAINT', 'WATCH', 'SMART', 'CLOCK', 'DANCE', 'FRUIT', 'HEART', 'OCEAN', 'PAPER', 'RIVER', 'SMILE', 'TABLE', 'WATER'],
+        medium: ['PLUSH', 'TRAIN', 'STONE', 'WORLD', 'CREAM', 'FRESH', 'GHOST', 'JOINT', 'NIGHT', 'QUEEN', 'ROUND', 'TRUST', 'YOUTH', 'SHARP', 'GRAND', 'CHUNK', 'DWARF', 'FRAME', 'GRASP', 'KNACK'],
+        hard: ['JAZZY', 'FIZZY', 'FUZZY', 'DIZZY', 'PROXY', 'QUARTZ', 'GLYPH', 'NYMPH', 'CRYPT', 'LYMPH', 'PSYCH', 'WALTZ', 'BLITZ', 'FJORD', 'VODKA', 'WAXED', 'ZONED', 'MIXED', 'BOXED', 'VEXED']
+    },
+    6: {
+        easy: ['ANIMAL', 'BASKET', 'CASTLE', 'DOCTOR', 'ENGINE', 'FLOWER', 'GARDEN', 'ISLAND', 'JUNGLE', 'KITCHEN', 'LAPTOP', 'MARKET', 'NATURE', 'ORANGE', 'PLANET', 'RABBIT', 'SCHOOL', 'SUMMER', 'TURTLE', 'WINTER'],
+        medium: ['BATTLE', 'CHANCE', 'DEBATE', 'EXTENT', 'FIERCE', 'GROWTH', 'IMPACT', 'LAWYER', 'MUSCLE', 'OBTAIN', 'POLICY', 'RANDOM', 'STABLE', 'TREATY', 'URGENT', 'VENDOR', 'WEALTH', 'ANCHOR', 'BRONZE', 'CARBON'],
+        hard: ['BUZZED', 'FIZZLE', 'JAZZED', 'MUZZLE', 'NUZZLE', 'PUZZLE', 'QUARTZ', 'RHYTHM', 'SYZYGY', 'TWISTY', 'WAFFLE', 'ZOMBIE', 'OXYGEN', 'ZEPHYR', 'ENZYME', 'FOXILY', 'JAZZBO', 'KVETCH', 'PHLEGM', 'SPHINX']
+    }
+};
 
-            useEffect(() => {
-                // Инициализация Telegram Web App
-                if (window.Telegram?.WebApp) {
-                    window.Telegram.WebApp.ready();
-                    window.Telegram.WebApp.expand();
-                }
-                loadGame();
-            }, []);
+function WordleGame() {
+    // State variables
+    const [gridSize, setGridSize] = useState(5); // 3, 4, 5, or 6
+    const [difficulty, setDifficulty] = useState('medium');
+    const [targetWord, setTargetWord] = useState('');
+    const [guesses, setGuesses] = useState([]);
+    const [currentGuess, setCurrentGuess] = useState('');
+    const [gameStatus, setGameStatus] = useState('playing');
+    const [showInstructions, setShowInstructions] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
+    const [showLeaderboard, setShowLeaderboard] = useState(false);
+    const [stats, setStats] = useState({ 
+        3: { easy: { played: 0, won: 0, streak: 0 }, medium: { played: 0, won: 0, streak: 0 }, hard: { played: 0, won: 0, streak: 0 } },
+        4: { easy: { played: 0, won: 0, streak: 0 }, medium: { played: 0, won: 0, streak: 0 }, hard: { played: 0, won: 0, streak: 0 } },
+        5: { easy: { played: 0, won: 0, streak: 0 }, medium: { played: 0, won: 0, streak: 0 }, hard: { played: 0, won: 0, streak: 0 } },
+        6: { easy: { played: 0, won: 0, streak: 0 }, medium: { played: 0, won: 0, streak: 0 }, hard: { played: 0, won: 0, streak: 0 } }
+    });
+    const [leaderboard, setLeaderboard] = useState([]);
+    const [playerName, setPlayerName] = useState('');
+    const [showNameInput, setShowNameInput] = useState(false);
+    const [winAnimation, setWinAnimation] = useState(false);
+    const [shakeRow, setShakeRow] = useState(false);
+    const [points, setPoints] = useState(0);
 
-            useEffect(() => {
-                if (targetWord === '') {
-                    selectNewWord();
-                }
-            }, [difficulty]);
+    // Initialize Telegram Web App
+    useEffect(() => {
+        if (window.Telegram?.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+            window.Telegram.WebApp.enableClosingConfirmation();
+        }
+        loadGame();
+    }, []);
 
-            const loadGame = () => {
-                const savedStats = localStorage.getItem('wordleStats');
-                if (savedStats) {
-                    setStats(JSON.parse(savedStats));
-                }
+    // Update word when difficulty or grid size changes
+    useEffect(() => {
+        if (targetWord === '' || targetWord.length !== gridSize) {
+            selectNewWord();
+        }
+    }, [difficulty, gridSize]);
 
-                const savedName = localStorage.getItem('playerName');
-                if (savedName) {
-                    setPlayerName(savedName);
-                }
-
-                const savedLeaderboard = localStorage.getItem('leaderboard');
-                if (savedLeaderboard) {
-                    setLeaderboard(JSON.parse(savedLeaderboard));
-                }
-
-                selectNewWord();
-            };
-
-            const selectNewWord = () => {
-                const words = WORD_LISTS[difficulty];
-                const word = words[Math.floor(Math.random() * words.length)];
-                setTargetWord(word);
-            };
-
-            const saveStats = (newStats) => {
-                setStats(newStats);
-                localStorage.setItem('wordleStats', JSON.stringify(newStats));
-            };
-
-            const updateLeaderboard = (score) => {
-                if (!playerName) {
-                    setShowNameInput(true);
-                    return;
-                }
-
-                let currentLeaderboard = [...leaderboard];
-                
-                const existingIndex = currentLeaderboard.findIndex(entry => entry.name === playerName);
-                if (existingIndex >= 0) {
-                    if (score > currentLeaderboard[existingIndex].score) {
-                        currentLeaderboard[existingIndex].score = score;
-                        currentLeaderboard[existingIndex].difficulty = difficulty;
-                    }
-                } else {
-                    currentLeaderboard.push({ name: playerName, score, difficulty });
-                }
-
-                currentLeaderboard.sort((a, b) => b.score - a.score);
-                currentLeaderboard = currentLeaderboard.slice(0, 10);
-
-                localStorage.setItem('leaderboard', JSON.stringify(currentLeaderboard));
-                setLeaderboard(currentLeaderboard);
-            };
-
-            const saveName = () => {
-                if (playerName.trim()) {
-                    localStorage.setItem('playerName', playerName.trim());
-                    setShowNameInput(false);
-                    if (points > 0) {
-                        updateLeaderboard(points);
-                    }
-                }
-            };
-
-            const handleKeyPress = (key) => {
-                if (gameStatus !== 'playing') return;
-                
-                if (key === 'ENTER') {
-                    submitGuess();
-                } else if (key === 'BACK') {
-                    setCurrentGuess(prev => prev.slice(0, -1));
-                } else if (currentGuess.length < 5) {
-                    setCurrentGuess(prev => prev + key);
-                }
-            };
-
-            const calculatePoints = (attempts) => {
-                const basePoints = { easy: 100, medium: 200, hard: 300 };
-                const multiplier = 7 - attempts;
-                return basePoints[difficulty] * multiplier;
-            };
-
-            const submitGuess = () => {
-                if (currentGuess.length !== 5) {
-                    setShakeRow(true);
-                    setTimeout(() => setShakeRow(false), 500);
-                    return;
-                }
-                
-                const newGuesses = [...guesses, currentGuess];
-                setGuesses(newGuesses);
-                
-                if (currentGuess === targetWord) {
-                    setGameStatus('won');
-                    setWinAnimation(true);
-                    setTimeout(() => setWinAnimation(false), 2000);
-                    
-                    const earnedPoints = calculatePoints(newGuesses.length);
-                    setPoints(earnedPoints);
-                    
-                    const newStats = { ...stats };
-                    newStats[difficulty].played += 1;
-                    newStats[difficulty].won += 1;
-                    newStats[difficulty].streak += 1;
-                    saveStats(newStats);
-                    
-                    if (playerName) {
-                        updateLeaderboard(earnedPoints);
-                    } else {
-                        setShowNameInput(true);
-                    }
-                } else if (newGuesses.length === 6) {
-                    setGameStatus('lost');
-                    const newStats = { ...stats };
-                    newStats[difficulty].played += 1;
-                    newStats[difficulty].streak = 0;
-                    saveStats(newStats);
-                }
-                
-                setCurrentGuess('');
-            };
-
-            const resetGame = () => {
-                selectNewWord();
-                setGuesses([]);
-                setCurrentGuess('');
-                setGameStatus('playing');
-                setPoints(0);
-            };
-
-            const changeDifficulty = (newDifficulty) => {
-                setDifficulty(newDifficulty);
-                setShowSettings(false);
-                resetGame();
-            };
-
-            const getLetterStatus = (letter, index, word) => {
-                if (word[index] === targetWord[index]) return 'correct';
-                if (targetWord.includes(letter)) return 'present';
-                return 'absent';
-            };
-
-            const getKeyboardLetterStatus = (letter) => {
-                let status = 'unused';
-                guesses.forEach(guess => {
-                    guess.split('').forEach((l, i) => {
-                        if (l === letter) {
-                            if (targetWord[i] === letter) status = 'correct';
-                            else if (targetWord.includes(letter) && status !== 'correct') status = 'present';
-                            else if (status === 'unused') status = 'absent';
-                        }
-                    });
-                });
-                return status;
-            };
-
-            const keyboard = [
-                ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-                ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACK']
-            ];
-
-            const getDifficultyColor = (diff) => {
-                if (diff === 'easy') return 'text-green-400';
-                if (diff === 'medium') return 'text-yellow-400';
-                return 'text-red-400';
-            };
-
-            const getDifficultyIcon = (diff) => {
-                if (diff === 'easy') return <Star size={16} />;
-                if (diff === 'medium') return <Zap size={16} />;
-                return <Award size={16} />;
-            };
-
-            return (
-                <div className="w-full min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-3 pb-32" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 140px)' }}>
-                    {winAnimation && (
-                        <div className="fixed inset-0 pointer-events-none z-50">
-                            {[...Array(30)].map((_, i) => (
-                                <div
-                                    key={i}
-                                    className="absolute animate-bounce"
-                                    style={{
-                                        left: `${Math.random() * 100}%`,
-                                        top: `-20px`,
-                                        animation: `fall ${2 + Math.random() * 2}s linear`,
-                                        fontSize: '2rem'
-                                    }}
-                                >
-                                    {['🎉', '⭐', '🏆', '✨', '🎊'][Math.floor(Math.random() * 5)]}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    <div className="max-w-md mx-auto mb-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="flex gap-2">
-                                <button onClick={() => setShowInstructions(!showInstructions)} className="p-2 hover:bg-white/10 rounded-lg transition">
-                                    <Info size={24} />
-                                </button>
-                                <button onClick={() => setShowSettings(!showSettings)} className="p-2 hover:bg-white/10 rounded-lg transition">
-                                    <Settings size={24} />
-                                </button>
-                            </div>
-                            <h1 className="text-3xl font-bold">WORDLE</h1>
-                            <button onClick={() => setShowLeaderboard(!showLeaderboard)} className="p-2 hover:bg-white/10 rounded-lg transition">
-                                <Trophy size={24} className="text-yellow-400" />
-                            </button>
-                        </div>
-
-                        <div className="flex items-center justify-center gap-2 mb-3">
-                            <div className={`flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full ${getDifficultyColor(difficulty)}`}>
-                                {getDifficultyIcon(difficulty)}
-                                <span className="font-semibold capitalize">{difficulty}</span>
-                            </div>
-                            <div className="text-sm text-white/60">
-                                Streak: {stats[difficulty].streak} 🔥
-                            </div>
-                        </div>
-
-                        {showInstructions && (
-                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4 text-sm">
-                                <h3 className="font-bold mb-2 text-lg">📖 How to Play</h3>
-                                <ul className="space-y-1">
-                                    <li>• Guess the 5-letter word in 6 tries</li>
-                                    <li>• <span className="bg-blue-500 px-2 py-1 rounded">Blue</span> = correct letter, correct position</li>
-                                    <li>• <span className="bg-yellow-500 px-2 py-1 rounded text-black">Yellow</span> = correct letter, wrong position</li>
-                                    <li>• <span className="bg-gray-600 px-2 py-1 rounded">Gray</span> = letter not in word</li>
-                                </ul>
-                                <div className="mt-3 pt-3 border-t border-white/20">
-                                    <h4 className="font-bold mb-1">🎯 Scoring</h4>
-                                    <ul className="space-y-1 text-xs">
-                                        <li>• Easy: 100 pts × (7 - attempts)</li>
-                                        <li>• Medium: 200 pts × (7 - attempts)</li>
-                                        <li>• Hard: 300 pts × (7 - attempts)</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        )}
-
-                        {showSettings && (
-                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4">
-                                <h3 className="font-bold mb-3 text-lg">⚙️ Settings</h3>
-                                <div className="space-y-2">
-                                    <p className="text-sm mb-2">Select Difficulty:</p>
-                                    {['easy', 'medium', 'hard'].map(diff => (
-                                        <button
-                                            key={diff}
-                                            onClick={() => changeDifficulty(diff)}
-                                            className={`w-full p-3 rounded-lg flex items-center justify-between transition ${
-                                                difficulty === diff ? 'bg-purple-600' : 'bg-white/5 hover:bg-white/10'
-                                            }`}
-                                        >
-                                            <span className="flex items-center gap-2">
-                                                {getDifficultyIcon(diff)}
-                                                <span className="capitalize font-semibold">{diff}</span>
-                                            </span>
-                                            <span className="text-xs text-white/60">
-                                                {stats[diff].won}/{stats[diff].played} wins
-                                            </span>
-                                        </button>
-                                    ))}
-                                </div>
-                                <div className="mt-4 pt-4 border-t border-white/20">
-                                    <button
-                                        onClick={() => setShowNameInput(true)}
-                                        className="w-full p-3 bg-white/5 hover:bg-white/10 rounded-lg transition"
-                                    >
-                                        {playerName ? `Change Name (${playerName})` : 'Set Player Name'}
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        {showLeaderboard && (
-                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4">
-                                <h3 className="font-bold mb-3 text-lg flex items-center gap-2">
-                                    <Trophy className="text-yellow-400" size={24} />
-                                    Leaderboard
-                                </h3>
-                                {leaderboard.length === 0 ? (
-                                    <p className="text-center text-white/60 py-4">No scores yet. Be the first!</p>
-                                ) : (
-                                    <div className="space-y-2">
-                                        {leaderboard.map((entry, index) => (
-                                            <div
-                                                key={index}
-                                                className={`flex items-center justify-between p-3 rounded-lg ${
-                                                    index === 0 ? 'bg-yellow-500/20 border border-yellow-500/40' :
-                                                    index === 1 ? 'bg-gray-300/20 border border-gray-300/40' :
-                                                    index === 2 ? 'bg-orange-600/20 border border-orange-600/40' :
-                                                    'bg-white/5'
-                                                }`}
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <span className="text-2xl">
-                                                        {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`}
-                                                    </span>
-                                                    <div>
-                                                        <div className="font-semibold">{entry.name}</div>
-                                                        <div className={`text-xs ${getDifficultyColor(entry.difficulty)}`}>
-                                                            {entry.difficulty}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="text-xl font-bold">{entry.score}</div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
-                        {showNameInput && (
-                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4">
-                                <h3 className="font-bold mb-3 text-lg">Enter Your Name</h3>
-                                <input
-                                    type="text"
-                                    value={playerName}
-                                    onChange={(e) => setPlayerName(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && saveName()}
-                                    placeholder="Your name"
-                                    className="w-full p-3 bg-white/10 border border-white/20 rounded-lg mb-3 text-white placeholder-white/40"
-                                    maxLength={20}
-                                />
-                                <div className="flex gap-2">
-                                    <button onClick={saveName} className="flex-1 bg-purple-600 hover:bg-purple-700 p-3 rounded-lg font-semibold transition">
-                                        Save
-                                    </button>
-                                    <button onClick={() => setShowNameInput(false)} className="px-4 bg-white/5 hover:bg-white/10 rounded-lg transition">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="max-w-md mx-auto mb-6">
-                        <div className="grid gap-2 mb-4">
-                            {[...Array(6)].map((_, rowIndex) => {
-                                const guess = guesses[rowIndex] || (rowIndex === guesses.length ? currentGuess : '');
-                                const isSubmitted = rowIndex < guesses.length;
-                                const isCurrentRow = rowIndex === guesses.length;
-                                
-                                return (
-                                    <div key={rowIndex} className={`grid grid-cols-5 gap-1.5 ${isCurrentRow && shakeRow ? 'shake' : ''}`}>
-                                        {[...Array(5)].map((_, colIndex) => {
-                                            const letter = guess[colIndex] || '';
-                                            const status = isSubmitted ? getLetterStatus(letter, colIndex, guess) : 'empty';
-                                            
-                                            return (
-                                                <div
-                                                    key={colIndex}
-                                                    className={`
-                                                        aspect-square flex items-center justify-center text-2xl font-bold rounded-lg border-2
-                                                        transition-all duration-300
-                                                        ${status === 'correct' ? 'bg-blue-500 border-blue-400 animate-pulse' : ''}
-                                                        ${status === 'present' ? 'bg-yellow-500 border-yellow-400' : ''}
-                                                        ${status === 'absent' ? 'bg-gray-600 border-gray-500' : ''}
-                                                        ${status === 'empty' ? 'bg-white/5 border-white/20' : ''}
-                                                        ${letter && !isSubmitted ? 'border-white/40 scale-105 bg-white/10' : ''}
-                                                    `}
-                                                >
-                                                    {letter}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                );
-                            })}
-                        </div>
-
-                        {gameStatus !== 'playing' && (
-                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-3 text-center">
-                                {gameStatus === 'won' ? (
-                                    <div>
-                                        <div className="text-6xl mb-3">🎉</div>
-                                        <h2 className="text-2xl font-bold text-green-400 mb-2">Amazing!</h2>
-                                        <p className="mb-2">You found the word in {guesses.length} tries!</p>
-                                        <div className="text-3xl font-bold text-yellow-400 mb-4">
-                                            +{points} points
-                                        </div>
-                                        {playerName && (
-                                            <p className="text-sm text-white/60 mb-4">Score saved to leaderboard!</p>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <div className="text-6xl mb-3">😢</div>
-                                        <h2 className="text-2xl font-bold text-red-400 mb-2">Game Over</h2>
-                                        <p>The word was:</p>
-                                        <p className="font-bold text-3xl mt-2 mb-4 text-yellow-400">{targetWord}</p>
-                                    </div>
-                                )}
-                                <button onClick={resetGame} className="mt-2 bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-lg font-semibold transition transform hover:scale-105">
-                                    Play Again
-                                </button>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="max-w-md mx-auto">
-                        {keyboard.map((row, rowIndex) => (
-                            <div key={rowIndex} className="flex justify-center gap-1 mb-2">
-                                {row.map(key => {
-                                    const status = key.length === 1 ? getKeyboardLetterStatus(key) : 'special';
-                                    
-                                    return (
-                                        <button
-                                            key={key}
-                                            onClick={() => handleKeyPress(key)}
-                                            disabled={gameStatus !== 'playing'}
-                                            className={`
-                                                px-2 py-3 rounded font-semibold transition-all transform active:scale-95 text-sm
-                                                ${key === 'ENTER' || key === 'BACK' ? 'px-3 text-xs' : 'min-w-[2rem]'}
-                                                ${status === 'correct' ? 'bg-blue-500 shadow-lg shadow-blue-500/50' : ''}
-                                                ${status === 'present' ? 'bg-yellow-500 shadow-lg shadow-yellow-500/50' : ''}
-                                                ${status === 'absent' ? 'bg-gray-600' : ''}
-                                                ${status === 'unused' ? 'bg-slate-600 hover:bg-slate-500' : ''}
-                                                ${status === 'special' ? 'bg-slate-700 hover:bg-slate-600' : ''}
-                                                ${gameStatus !== 'playing' ? 'opacity-50 cursor-not-allowed' : ''}
-                                            `}
-                                        >
-                                            {key === 'BACK' ? <Delete size={18} /> : key === 'ENTER' ? <Check size={18} /> : key}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="max-w-md mx-auto mt-4 flex items-center justify-center gap-2 text-sm">
-                        <span>Attempts:</span>
-                        {[...Array(6)].map((_, i) => (
-                            <div key={i} className={`w-3 h-3 rounded-full transition-all ${i < guesses.length ? 'bg-red-500 scale-125' : 'bg-white/20'}`} />
-                        ))}
-                    </div>
-                </div>
-            );
+    // Load game data from localStorage
+    const loadGame = () => {
+        const savedStats = localStorage.getItem('wordleStats');
+        if (savedStats) {
+            setStats(JSON.parse(savedStats));
         }
 
+        const savedName = localStorage.getItem('playerName');
+        if (savedName) {
+            setPlayerName(savedName);
+        }
+
+        const savedLeaderboard = localStorage.getItem('leaderboard');
+        if (savedLeaderboard) {
+            setLeaderboard(JSON.parse(savedLeaderboard));
+        }
+
+        selectNewWord();
+    };
+
+    // Select a new random word
+    const selectNewWord = () => {
+        const words = WORD_LISTS[gridSize][difficulty];
+        const word = words[Math.floor(Math.random() * words.length)];
+        setTargetWord(word);
+    };
+
+    // Save statistics to localStorage
+    const saveStats = (newStats) => {
+        setStats(newStats);
+        localStorage.setItem('wordleStats', JSON.stringify(newStats));
+    };
+
+    // Keyboard layout
+    const keyboard = [
+        ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+        ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+        ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACK']
+    ];
+
+    // ЗДЕСЬ БУДЕТ ЧАСТЬ 5: ФУНКЦИИ ИГРЫ
+    // ЗДЕСЬ БУДЕТ ЧАСТЬ 6: RENDER (JSX)
+}
+
+const updateLeaderboard = (score) => {
+    if (!playerName) {
+        setShowNameInput(true);
+        return;
+    }
+
+    let currentLeaderboard = [...leaderboard];
+    
+    const existingIndex = currentLeaderboard.findIndex(entry => entry.name === playerName);
+    if (existingIndex >= 0) {
+        if (score > currentLeaderboard[existingIndex].score) {
+            currentLeaderboard[existingIndex].score = score;
+            currentLeaderboard[existingIndex].difficulty = difficulty;
+            currentLeaderboard[existingIndex].gridSize = gridSize;
+        }
+    } else {
+        currentLeaderboard.push({ name: playerName, score, difficulty, gridSize });
+    }
+
+    currentLeaderboard.sort((a, b) => b.score - a.score);
+    currentLeaderboard = currentLeaderboard.slice(0, 10);
+
+    localStorage.setItem('leaderboard', JSON.stringify(currentLeaderboard));
+    setLeaderboard(currentLeaderboard);
+};
+
+// Save player name
+const saveName = () => {
+    if (playerName.trim()) {
+        localStorage.setItem('playerName', playerName.trim());
+        setShowNameInput(false);
+        if (points > 0) {
+            updateLeaderboard(points);
+        }
+    }
+};
+
+// Handle keyboard key press
+const handleKeyPress = (key) => {
+    if (gameStatus !== 'playing') return;
+    
+    if (key === 'ENTER') {
+        submitGuess();
+    } else if (key === 'BACK') {
+        setCurrentGuess(prev => prev.slice(0, -1));
+    } else if (currentGuess.length < gridSize) {
+        setCurrentGuess(prev => prev + key);
+    }
+};
+
+// Calculate points based on attempts and settings
+const calculatePoints = (attempts) => {
+    const basePoints = { 
+        3: { easy: 50, medium: 100, hard: 150 },
+        4: { easy: 75, medium: 150, hard: 225 },
+        5: { easy: 100, medium: 200, hard: 300 },
+        6: { easy: 125, medium: 250, hard: 375 }
+    };
+    const multiplier = 7 - attempts;
+    return basePoints[gridSize][difficulty] * multiplier;
+};
+
+// Share game result
+const shareResult = () => {
+    const emoji = gameStatus === 'won' ? '🎉' : '😢';
+    const statusText = gameStatus === 'won' ? `Won in ${guesses.length}/6` : 'Lost';
+    
+    let grid = '';
+    guesses.forEach(guess => {
+        guess.split('').forEach((letter, i) => {
+            const status = getLetterStatus(letter, i, guess);
+            if (status === 'correct') grid += '🟦';
+            else if (status === 'present') grid += '🟨';
+            else grid += '⬜';
+        });
+        grid += '\n';
+    });
+    
+    const shareText = `${emoji} Wordle ${gridSize}×6 ${statusText}\nDifficulty: ${difficulty}\nScore: ${points} pts\n\n${grid}\nPlay: https://t.me/wordletgapp_bot/wordle`;
+    
+    if (window.Telegram?.WebApp) {
+        const url = `https://t.me/share/url?url=https://t.me/wordletgapp_bot/wordle&text=${encodeURIComponent(shareText)}`;
+        window.Telegram.WebApp.openTelegramLink(url);
+    } else if (navigator.share) {
+        navigator.share({
+            title: 'Wordle Game Result',
+            text: shareText
+        }).catch(() => {
+            navigator.clipboard.writeText(shareText);
+            alert('Result copied to clipboard!');
+        });
+    } else {
+        navigator.clipboard.writeText(shareText);
+        alert('Result copied to clipboard!');
+    }
+};
+
+// Submit current guess
+const submitGuess = () => {
+    if (currentGuess.length !== gridSize) {
+        setShakeRow(true);
+        setTimeout(() => setShakeRow(false), 500);
+        return;
+    }
+    
+    const newGuesses = [...guesses, currentGuess];
+    setGuesses(newGuesses);
+    
+    if (currentGuess === targetWord) {
+        setGameStatus('won');
+        setWinAnimation(true);
+        setTimeout(() => setWinAnimation(false), 2000);
+        
+        const earnedPoints = calculatePoints(newGuesses.length);
+        setPoints(earnedPoints);
+        
+        const newStats = { ...stats };
+        newStats[gridSize][difficulty].played += 1;
+        newStats[gridSize][difficulty].won += 1;
+        newStats[gridSize][difficulty].streak += 1;
+        saveStats(newStats);
+        
+        if (playerName) {
+            updateLeaderboard(earnedPoints);
+        } else {
+            setShowNameInput(true);
+        }
+    } else if (newGuesses.length === 6) {
+        setGameStatus('lost');
+        const newStats = { ...stats };
+        newStats[gridSize][difficulty].played += 1;
+        newStats[gridSize][difficulty].streak = 0;
+        saveStats(newStats);
+    }
+    
+    setCurrentGuess('');
+};
+
+// Reset game
+const resetGame = () => {
+    selectNewWord();
+    setGuesses([]);
+    setCurrentGuess('');
+    setGameStatus('playing');
+    setPoints(0);
+};
+
+// Change difficulty
+const changeDifficulty = (newDifficulty) => {
+    setDifficulty(newDifficulty);
+    resetGame();
+};
+
+// Change grid size
+const changeGridSize = (newSize) => {
+    setGridSize(newSize);
+    resetGame();
+};
+
+// Get letter status in word
+const getLetterStatus = (letter, index, word) => {
+    if (word[index] === targetWord[index]) return 'correct';
+    if (targetWord.includes(letter)) return 'present';
+    return 'absent';
+};
+
+// Get keyboard letter status
+const getKeyboardLetterStatus = (letter) => {
+    let status = 'unused';
+    guesses.forEach(guess => {
+        guess.split('').forEach((l, i) => {
+            if (l === letter) {
+                if (targetWord[i] === letter) status = 'correct';
+                else if (targetWord.includes(letter) && status !== 'correct') status = 'present';
+                else if (status === 'unused') status = 'absent';
+            }
+        });
+    });
+    return status;
+};
+
+// Get difficulty color
+const getDifficultyColor = (diff) => {
+    if (diff === 'easy') return 'text-green-400';
+    if (diff === 'medium') return 'text-yellow-400';
+    return 'text-red-400';
+};
+
+// Get difficulty icon
+const getDifficultyIcon = (diff) => {
+    if (diff === 'easy') return <Star size={16} />;
+    if (diff === 'medium') return <Zap size={16} />;
+    return <Award size={16} />;
+};
+
+// Get cell size based on grid
+const getCellSize = () => {
+    if (gridSize === 3) return 'text-3xl';
+    if (gridSize === 4) return 'text-2xl';
+    if (gridSize === 5) return 'text-xl';
+    return 'text-lg';
+};
+return (
+    <div className="w-full min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-3 pb-32" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 140px)' }}>
+        {/* Win Animation */}
+        {winAnimation && (
+            <div className="fixed inset-0 pointer-events-none z-50">
+                {[...Array(30)].map((_, i) => (
+                    <div
+                        key={i}
+                        className="absolute animate-bounce"
+                        style={{
+                            left: `${Math.random() * 100}%`,
+                            top: `-20px`,
+                            animation: `fall ${2 + Math.random() * 2}s linear`,
+                            fontSize: '2rem'
+                        }}
+                    >
+                        {['🎉', '⭐', '🏆', '✨', '🎊'][Math.floor(Math.random() * 5)]}
+                    </div>
+                ))}
+            </div>
+        )}
+
+        {/* Header */}
+        <div className="max-w-md mx-auto mb-4">
+            <div className="flex items-center justify-between mb-3">
+                <div className="flex gap-2">
+                    <button onClick={() => setShowInstructions(!showInstructions)} className="p-2 hover:bg-white/10 rounded-lg transition">
+                        <Lightbulb size={24} />
+                    </button>
+                    <button onClick={() => setShowSettings(!showSettings)} className="p-2 hover:bg-white/10 rounded-lg transition">
+                        <Gear size={24} />
+                    </button>
+                </div>
+                <h1 className="text-3xl font-bold">WORDLE</h1>
+                <button onClick={() => setShowLeaderboard(!showLeaderboard)} className="p-2 hover:bg-white/10 rounded-lg transition">
+                    <Trophy size={24} className="text-yellow-400" />
+                </button>
+            </div>
+
+            {/* Status Bar */}
+            <div className="flex items-center justify-center gap-2 mb-3 flex-wrap">
+                <div className={`flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full text-sm ${getDifficultyColor(difficulty)}`}>
+                    {getDifficultyIcon(difficulty)}
+                    <span className="font-semibold capitalize">{difficulty}</span>
+                </div>
+                <div className="px-3 py-1.5 bg-white/10 rounded-full text-sm">
+                    {gridSize}×6
+                </div>
+                <div className="text-sm text-white/60">
+                    Streak: {stats[gridSize][difficulty].streak} 🔥
+                </div>
+            </div>
+
+            {/* Instructions Modal */}
+            {showInstructions && (
+                <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4 text-sm">
+                    <h3 className="font-bold mb-2 text-lg">💡 How to Play</h3>
+                    <ul className="space-y-1">
+                        <li>• Guess the {gridSize}-letter word in 6 tries</li>
+                        <li>• <span className="bg-blue-500 px-2 py-1 rounded">Blue</span> = correct letter, correct position</li>
+                        <li>• <span className="bg-yellow-500 px-2 py-1 rounded text-black">Yellow</span> = correct letter, wrong position</li>
+                        <li>• <span className="bg-gray-600 px-2 py-1 rounded">Gray</span> = letter not in word</li>
+                    </ul>
+                    <div className="mt-3 pt-3 border-t border-white/20">
+                        <h4 className="font-bold mb-1">🎯 Scoring</h4>
+                        <ul className="space-y-1 text-xs">
+                            <li>• {gridSize} letters: Base points × (7 - attempts)</li>
+                            <li>• Easy: Lower points</li>
+                            <li>• Medium: Medium points</li>
+                            <li>• Hard: Higher points</li>
+                        </ul>
+                    </div>
+                </div>
+            )}
+
+            {/* ЗДЕСЬ БУДЕТ ЧАСТЬ 6B: НАСТРОЙКИ И ТАБЛИЦА ЛИДЕРОВ */}
+        </div>
+        
+        {/* ЗДЕСЬ БУДЕТ ЧАСТЬ 6C: ИГРОВОЕ ПОЛЕ И КЛАВИАТУРА */}
+    </div>
+);
+{/* Settings Modal */}
+{showSettings && (
+    <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4">
+        <h3 className="font-bold mb-3 text-lg">⚙️ Settings</h3>
+        
+        {/* Grid Size Selection */}
+        <div className="mb-4">
+            <p className="text-sm mb-2 font-semibold">Grid Size:</p>
+            <div className="grid grid-cols-4 gap-2">
+                {[3, 4, 5, 6].map(size => (
+                    <button
+                        key={size}
+                        onClick={() => changeGridSize(size)}
+                        className={`p-3 rounded-lg font-semibold transition ${
+                            gridSize === size ? 'bg-blue-600' : 'bg-white/5 hover:bg-white/10'
+                        }`}
+                    >
+                        {size}×6
+                    </button>
+                ))}
+            </div>
+        </div>
+
+        {/* Difficulty Selection */}
+        <div className="space-y-2">
+            <p className="text-sm mb-2 font-semibold">Difficulty:</p>
+            {['easy', 'medium', 'hard'].map(diff => (
+                <button
+                    key={diff}
+                    onClick={() => changeDifficulty(diff)}
+                    className={`w-full p-3 rounded-lg flex items-center justify-between transition ${
+                        difficulty === diff ? 'bg-purple-600' : 'bg-white/5 hover:bg-white/10'
+                    }`}
+                >
+                    <span className="flex items-center gap-2">
+                        {getDifficultyIcon(diff)}
+                        <span className="capitalize font-semibold">{diff}</span>
+                    </span>
+                    <span className="text-xs text-white/60">
+                        {stats[gridSize][diff].won}/{stats[gridSize][diff].played} wins
+                    </span>
+                </button>
+            ))}
+        </div>
+        
+        {/* Player Name */}
+        <div className="mt-4 pt-4 border-t border-white/20">
+            <button
+                onClick={() => setShowNameInput(true)}
+                className="w-full p-3 bg-white/5 hover:bg-white/10 rounded-lg transition"
+            >
+                {playerName ? `Change Name (${playerName})` : 'Set Player Name'}
+            </button>
+        </div>
+    </div>
+)}
+
+{/* Leaderboard Modal */}
+{showLeaderboard && (
+    <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4">
+        <h3 className="font-bold mb-3 text-lg flex items-center gap-2">
+            <Trophy className="text-yellow-400" size={24} />
+            Leaderboard
+        </h3>
+        {leaderboard.length === 0 ? (
+            <p className="text-center text-white/60 py-4">No scores yet. Be the first!</p>
+        ) : (
+            <div className="space-y-2">
+                {leaderboard.map((entry, index) => (
+                    <div
+                        key={index}
+                        className={`flex items-center justify-between p-3 rounded-lg ${
+                            index === 0 ? 'bg-yellow-500/20 border border-yellow-500/40' :
+                            index === 1 ? 'bg-gray-300/20 border border-gray-300/40' :
+                            index === 2 ? 'bg-orange-600/20 border border-orange-600/40' :
+                            'bg-white/5'
+                        }`}
+                    >
+                        <div className="flex items-center gap-3">
+                            <span className="text-2xl">
+                                {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`}
+                            </span>
+                            <div>
+                                <div className="font-semibold">{entry.name}</div>
+                                <div className="text-xs text-white/60">
+                                    {entry.gridSize}×6 • {entry.difficulty}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="text-xl font-bold">{entry.score}</div>
+                    </div>
+                ))}
+            </div>
+        )}
+    </div>
+)}
+
+{/* Name Input Modal */}
+{showNameInput && (
+    <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4">
+        <h3 className="font-bold mb-3 text-lg">Enter Your Name</h3>
+        <input
+            type="text"
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && saveName()}
+            placeholder="Your name"
+            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg mb-3 text-white placeholder-white/40"
+            maxLength={20}
+        />
+        <div className="flex gap-2">
+            <button onClick={saveName} className="flex-1 bg-purple-600 hover:bg-purple-700 p-3 rounded-lg font-semibold transition">
+                Save
+            </button>
+            <button onClick={() => setShowNameInput(false)} className="px-4 bg-white/5 hover:bg-white/10 rounded-lg transition">
+                Cancel
+            </button>
+        </div>
+    </div>
+)}
+
+{/* Game Board */}
+<div className="max-w-md mx-auto mb-4">
+    <div className="grid gap-1.5 mb-3" style={{ maxWidth: gridSize === 3 ? '240px' : gridSize === 4 ? '280px' : gridSize === 5 ? '320px' : '360px', margin: '0 auto' }}>
+        {[...Array(6)].map((_, rowIndex) => {
+            const guess = guesses[rowIndex] || (rowIndex === guesses.length ? currentGuess : '');
+            const isSubmitted = rowIndex < guesses.length;
+            const isCurrentRow = rowIndex === guesses.length;
+            
+            return (
+                <div key={rowIndex} className={`grid gap-1.5 ${isCurrentRow && shakeRow ? 'shake' : ''}`} style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}>
+                    {[...Array(gridSize)].map((_, colIndex) => {
+                        const letter = guess[colIndex] || '';
+                        const status = isSubmitted ? getLetterStatus(letter, colIndex, guess) : 'empty';
+                        
+                        return (
+                            <div
+                                key={colIndex}
+                                className={`
+                                    aspect-square flex items-center justify-center ${getCellSize()} font-bold rounded-lg border-2
+                                    transition-all duration-300
+                                    ${status === 'correct' ? 'bg-blue-500 border-blue-400 animate-pulse' : ''}
+                                    ${status === 'present' ? 'bg-yellow-500 border-yellow-400' : ''}
+                                    ${status === 'absent' ? 'bg-gray-600 border-gray-500' : ''}
+                                    ${status === 'empty' ? 'bg-white/5 border-white/20' : ''}
+                                    ${letter && !isSubmitted ? 'border-white/40 scale-105 bg-white/10' : ''}
+                                `}
+                            >
+                                {letter}
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        })}
+    </div>
+
+    {/* Game Over Screen */}
+    {gameStatus !== 'playing' && (
+        <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-3 text-center">
+            {gameStatus === 'won' ? (
+                <div>
+                    <div className="text-6xl mb-3">🎉</div>
+                    <h2 className="text-2xl font-bold text-green-400 mb-2">Amazing!</h2>
+                    <p className="mb-2">You found the word in {guesses.length} tries!</p>
+                    <div className="text-3xl font-bold text-yellow-400 mb-4">
+                        +{points} points
+                    </div>
+                    {playerName && (
+                        <p className="text-sm text-white/60 mb-4">Score saved to leaderboard!</p>
+                    )}
+                    <div className="flex gap-2">
+                        <button onClick={shareResult} className="flex-1 bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 flex items-center justify-center gap-2">
+                            <Share size={20} />
+                            Share
+                        </button>
+                        <button onClick={resetGame} className="flex-1 bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105">
+                            Play Again
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <div>
+                    <div className="text-6xl mb-3">😢</div>
+                    <h2 className="text-2xl font-bold text-red-400 mb-2">Game Over</h2>
+                    <p>The word was:</p>
+                    <p className="font-bold text-3xl mt-2 mb-4 text-yellow-400">{targetWord}</p>
+                    <div className="flex gap-2">
+                        <button onClick={shareResult} className="flex-1 bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 flex items-center justify-center gap-2">
+                            <Share size={20} />
+                            Share
+                        </button>
+                        <button onClick={resetGame} className="flex-1 bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105">
+                            Play Again
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    )}
+</div>
+
+{/* Keyboard */}
+<div className="max-w-md mx-auto mb-4">
+    {keyboard.map((row, rowIndex) => (
+        <div key={rowIndex} className="flex justify-center gap-1 mb-1.5">
+            {row.map(key => {
+                const status = key.length === 1 ? getKeyboardLetterStatus(key) : 'special';
+                
+                return (
+                    <button
+                        key={key}
+                        onClick={() => handleKeyPress(key)}
+                        disabled={gameStatus !== 'playing'}
+                        className={`
+                            px-2 py-3 rounded font-semibold transition-all transform active:scale-95 text-sm
+                            ${key === 'ENTER' || key === 'BACK' ? 'px-3 text-xs' : 'min-w-[2rem]'}
+                            ${status === 'correct' ? 'bg-blue-500 shadow-lg shadow-blue-500/50' : ''}
+                            ${status === 'present' ? 'bg-yellow-500 shadow-lg shadow-yellow-500/50' : ''}
+                            ${status === 'absent' ? 'bg-gray-600' : ''}
+                            ${status === 'unused' ? 'bg-slate-600 hover:bg-slate-500' : ''}
+                            ${status === 'special' ? 'bg-slate-700 hover:bg-slate-600' : ''}
+                            ${gameStatus !== 'playing' ? 'opacity-50 cursor-not-allowed' : ''}
+                        `}
+                    >
+                        {key === 'BACK' ? <Delete size={18} /> : key === 'ENTER' ? <Check size={18} /> : key}
+                    </button>
+                );
+            })}
+        </div>
+    ))}
+</div>
+
+{/* Attempts Indicator */}
+<div className="max-w-md mx-auto mt-3 mb-20 flex items-center justify-center gap-2 text-sm">
+    <span>Attempts:</span>
+    {[...Array(6)].map((_, i) => (
+        <div key={i} className={`w-3 h-3 rounded-full transition-all ${i < guesses.length ? 'bg-red-500 scale-125' : 'bg-white/20'}`} />
+    ))}
+</div>
+        
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<WordleGame />);
     </script>
