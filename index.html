@@ -59,7 +59,6 @@
             align-items: center;
             justify-content: center;
             font-size: 22px;
-            transition: background 0.2s;
         }
         
         .header-btn:active {
@@ -87,10 +86,8 @@
         .info-badge.medium { color: #facc15; }
         .info-badge.hard { color: #f87171; }
         
-        /* ИСПРАВЛЕННАЯ СЕТКА */
         .grid-container {
-            width: 100%;
-            max-width: 350px;
+            max-width: 400px;
             margin: 0 auto 20px;
             padding: 0 10px;
         }
@@ -98,37 +95,33 @@
         .grid {
             display: flex;
             flex-direction: column;
+            align-items: center;
             gap: 8px;
-            width: 100%;
         }
         
         .row {
             display: flex;
             gap: 8px;
-            justify-content: center;
         }
         
-        /* КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ - фиксированные размеры ячеек */
+        /* КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ */
         .cell {
-            width: 52px;
-            height: 52px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 24px;
             border-radius: 8px;
             border: 2px solid rgba(255,255,255,0.3);
             background: rgba(255,255,255,0.08);
-            transition: all 0.2s;
             text-transform: uppercase;
+            transition: all 0.2s;
         }
         
-        /* Размеры ячеек в зависимости от размера сетки */
-        .cell.size-3 { width: 70px; height: 70px; font-size: 32px; }
-        .cell.size-4 { width: 62px; height: 62px; font-size: 28px; }
-        .cell.size-5 { width: 52px; height: 52px; font-size: 24px; }
-        .cell.size-6 { width: 44px; height: 44px; font-size: 20px; }
+        /* Фиксированные размеры для каждого размера сетки */
+        .grid.size-3 .cell { width: 72px; height: 72px; font-size: 32px; }
+        .grid.size-4 .cell { width: 64px; height: 64px; font-size: 28px; }
+        .grid.size-5 .cell { width: 56px; height: 56px; font-size: 24px; }
+        .grid.size-6 .cell { width: 48px; height: 48px; font-size: 20px; }
         
         .cell.filled {
             border-color: rgba(255,255,255,0.6);
@@ -169,21 +162,10 @@
             80% { transform: translateX(8px); }
         }
         
-        @keyframes pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1); }
-        }
-        
         .row.shake {
             animation: shake 0.4s ease;
         }
         
-        .cell.pop {
-            animation: pop 0.15s ease;
-        }
-        
-        /* Клавиатура */
         .keyboard {
             max-width: 400px;
             margin: 0 auto;
@@ -228,13 +210,11 @@
         
         .key.correct {
             background: #3b82f6;
-            box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
         }
         
         .key.present {
             background: #eab308;
             color: #000;
-            box-shadow: 0 0 12px rgba(234, 179, 8, 0.5);
         }
         
         .key.absent {
@@ -243,10 +223,8 @@
         
         .key:disabled {
             opacity: 0.5;
-            cursor: not-allowed;
         }
         
-        /* Сообщения */
         .message {
             position: fixed;
             top: 70px;
@@ -258,15 +236,8 @@
             border-radius: 10px;
             font-weight: 600;
             z-index: 1000;
-            animation: slideDown 0.3s ease;
         }
         
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        
-        /* Модальные окна */
         .modal {
             position: fixed;
             inset: 0;
@@ -276,7 +247,6 @@
             justify-content: center;
             z-index: 100;
             padding: 16px;
-            backdrop-filter: blur(4px);
         }
         
         .modal-content {
@@ -286,7 +256,6 @@
             max-width: 360px;
             width: 100%;
             border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
         
         .modal h2 {
@@ -295,7 +264,6 @@
             text-align: center;
         }
         
-        /* Кнопки */
         .btn {
             width: 100%;
             padding: 14px;
@@ -304,7 +272,6 @@
             font-weight: 600;
             font-size: 16px;
             cursor: pointer;
-            transition: all 0.2s;
             margin-top: 8px;
         }
         
@@ -327,7 +294,6 @@
             color: white;
         }
         
-        /* Результат */
         .result-panel {
             background: rgba(255,255,255,0.1);
             border-radius: 16px;
@@ -336,7 +302,6 @@
             margin: 20px auto;
             max-width: 350px;
             border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
         }
         
         .result-emoji {
@@ -379,7 +344,6 @@
             margin: 0;
         }
         
-        /* Настройки */
         .settings-group {
             margin-bottom: 20px;
         }
@@ -389,8 +353,6 @@
             font-weight: 600;
             margin-bottom: 10px;
             color: rgba(255,255,255,0.7);
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
         
         .settings-buttons {
@@ -408,17 +370,11 @@
             cursor: pointer;
             background: rgba(255,255,255,0.05);
             color: white;
-            transition: all 0.2s;
         }
         
         .settings-btn.active {
             background: rgba(124, 58, 237, 0.3);
             border-color: #7c3aed;
-            box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
-        }
-        
-        .settings-btn:active {
-            transform: scale(0.95);
         }
         
         .diff-buttons {
@@ -438,7 +394,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.2s;
         }
         
         .diff-btn.active {
@@ -446,23 +401,11 @@
             border-color: #7c3aed;
         }
         
-        .diff-btn:active {
-            transform: scale(0.98);
-        }
-        
-        .diff-btn .label { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px;
-            font-size: 16px;
-        }
-        
         .diff-btn .stats { 
             font-size: 13px; 
             opacity: 0.6; 
         }
         
-        /* Попытки */
         .attempts {
             display: flex;
             justify-content: center;
@@ -483,36 +426,28 @@
             height: 14px;
             border-radius: 50%;
             background: rgba(255,255,255,0.2);
-            transition: all 0.3s;
         }
         
         .attempt-dot.used {
             background: #ef4444;
-            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
         }
         
         .attempt-dot.won {
             background: #22c55e;
             transform: scale(1.3);
-            box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
         }
         
-        /* Инструкции */
         .instructions {
             background: rgba(255,255,255,0.1);
             border-radius: 16px;
             padding: 20px;
             margin: 0 auto 20px;
             max-width: 400px;
-            border: 1px solid rgba(255,255,255,0.1);
         }
         
         .instructions h3 {
             margin-bottom: 16px;
             font-size: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         
         .instructions ul {
@@ -521,9 +456,6 @@
         
         .instructions li {
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
             font-size: 15px;
         }
         
@@ -539,14 +471,11 @@
         .color-sample.yellow { background: #eab308; color: #000; }
         .color-sample.gray { background: #4b5563; }
         
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
     <div id="app">
-        <!-- Header -->
         <div class="header">
             <div style="display: flex; gap: 8px;">
                 <button class="header-btn" id="helpBtn">💡</button>
@@ -556,31 +485,27 @@
             <button class="header-btn" id="statsBtn">🏆</button>
         </div>
         
-        <!-- Game Info -->
         <div class="game-info">
             <span class="info-badge" id="diffBadge">Medium</span>
             <span class="info-badge" id="sizeBadge">5×6</span>
             <span class="info-badge" id="streakBadge">🔥 0</span>
         </div>
         
-        <!-- Instructions -->
         <div class="instructions hidden" id="instructions">
             <h3>💡 How to Play</h3>
             <ul>
                 <li>• Guess the word in 6 tries</li>
-                <li>• <span class="color-sample blue">Blue</span> = correct letter & position</li>
-                <li>• <span class="color-sample yellow">Yellow</span> = correct letter, wrong spot</li>
-                <li>• <span class="color-sample gray">Gray</span> = letter not in word</li>
+                <li>• <span class="color-sample blue">Blue</span> = correct position</li>
+                <li>• <span class="color-sample yellow">Yellow</span> = wrong position</li>
+                <li>• <span class="color-sample gray">Gray</span> = not in word</li>
             </ul>
             <button class="btn btn-secondary" onclick="toggleInstructions()">Got it! 👍</button>
         </div>
         
-        <!-- Grid -->
         <div class="grid-container">
             <div class="grid" id="grid"></div>
         </div>
         
-        <!-- Result Panel -->
         <div class="result-panel hidden" id="resultPanel">
             <div class="result-emoji" id="resultEmoji">🎉</div>
             <div class="result-title" id="resultTitle">Amazing!</div>
@@ -593,17 +518,14 @@
             </div>
         </div>
         
-        <!-- Keyboard -->
         <div class="keyboard" id="keyboard"></div>
         
-        <!-- Attempts -->
         <div class="attempts">
             <span>Attempts:</span>
             <div class="attempts-dots" id="attemptDots"></div>
         </div>
     </div>
     
-    <!-- Settings Modal -->
     <div class="modal hidden" id="settingsModal">
         <div class="modal-content">
             <h2>⚙️ Settings</h2>
@@ -619,35 +541,32 @@
         </div>
     </div>
     
-    <!-- Message Toast -->
     <div class="message hidden" id="message"></div>
 
     <script>
-        // ============ GAME DATA ============
         const WORDS = {
             3: {
-                easy: ['CAT', 'DOG', 'SUN', 'CAR', 'BAT', 'HAT', 'PEN', 'CUP', 'BOX', 'FOX', 'BED', 'EGG', 'JAR', 'KEY', 'MAP', 'BAG', 'BUS', 'TOY', 'NET', 'POT'],
-                medium: ['WAX', 'ZEN', 'JOY', 'GYM', 'SKY', 'FLY', 'SPY', 'DRY', 'FRY', 'TRY', 'WHY', 'SHY', 'BUY', 'GUY', 'DAY', 'BAY', 'LAY', 'MAY', 'PAY', 'RAY'],
-                hard: ['ZAP', 'ZOO', 'ZIP', 'ZAG', 'JAM', 'JET', 'JAW', 'JOB', 'JIG', 'WAD', 'WAG', 'WEB', 'WIG', 'WOK', 'VOW', 'VEX', 'WAR', 'WOE', 'YAK', 'YAM']
+                easy: ['CAT', 'DOG', 'SUN', 'CAR', 'BAT', 'HAT', 'PEN', 'CUP', 'BOX', 'FOX'],
+                medium: ['WAX', 'ZEN', 'JOY', 'GYM', 'SKY', 'FLY', 'SPY', 'DRY', 'FRY', 'TRY'],
+                hard: ['ZAP', 'ZOO', 'ZIP', 'JAM', 'JET', 'JAW', 'JOB', 'WEB', 'VOW', 'VEX']
             },
             4: {
-                easy: ['TREE', 'BOOK', 'DOOR', 'FISH', 'HAND', 'MOON', 'STAR', 'BIRD', 'CAKE', 'GAME', 'BALL', 'KING', 'RING', 'SONG', 'WIND', 'RAIN', 'SNOW', 'FIRE', 'HOME', 'LOVE'],
-                medium: ['BUSY', 'CALM', 'DUMP', 'FLEX', 'GANG', 'HUGE', 'JUMP', 'KIND', 'LAZY', 'MYTH', 'QUIZ', 'RARE', 'SAKE', 'TRAP', 'WALK', 'ZONE', 'BOND', 'COAL', 'DAWN', 'EARN'],
-                hard: ['WAXY', 'ZANY', 'ZERO', 'ZOOM', 'JINX', 'JUNK', 'JADE', 'JAZZ', 'FOXY', 'FLUX', 'LYNX', 'ONYX', 'AQUA', 'APEX', 'EXAM', 'WHIZ', 'FIZZ', 'BUZZ', 'FUZZ', 'COZY']
+                easy: ['TREE', 'BOOK', 'DOOR', 'FISH', 'HAND', 'MOON', 'STAR', 'BIRD', 'CAKE', 'GAME'],
+                medium: ['BUSY', 'CALM', 'DUMP', 'FLEX', 'HUGE', 'JUMP', 'KIND', 'LAZY', 'MYTH', 'QUIZ'],
+                hard: ['WAXY', 'ZANY', 'ZERO', 'ZOOM', 'JINX', 'JUNK', 'JAZZ', 'FOXY', 'LYNX', 'ONYX']
             },
             5: {
-                easy: ['BREAD', 'MOUSE', 'HOUSE', 'PLANT', 'BEACH', 'DREAM', 'LIGHT', 'PAINT', 'WATCH', 'SMART', 'CLOCK', 'DANCE', 'FRUIT', 'HEART', 'OCEAN', 'PAPER', 'RIVER', 'SMILE', 'TABLE', 'WATER'],
-                medium: ['PLUSH', 'TRAIN', 'STONE', 'WORLD', 'CREAM', 'FRESH', 'GHOST', 'JOINT', 'NIGHT', 'QUEEN', 'ROUND', 'TRUST', 'YOUTH', 'SHARP', 'GRAND', 'CHUNK', 'DWARF', 'FRAME', 'GRASP', 'KNACK'],
-                hard: ['JAZZY', 'FIZZY', 'FUZZY', 'DIZZY', 'PROXY', 'GLYPH', 'NYMPH', 'CRYPT', 'LYMPH', 'PSYCH', 'WALTZ', 'BLITZ', 'FJORD', 'VODKA', 'WAXED', 'ZONED', 'MIXED', 'BOXED', 'VEXED', 'WINDY']
+                easy: ['BREAD', 'MOUSE', 'HOUSE', 'PLANT', 'BEACH', 'DREAM', 'LIGHT', 'PAINT', 'WATCH', 'SMART'],
+                medium: ['PLUSH', 'TRAIN', 'STONE', 'WORLD', 'CREAM', 'FRESH', 'GHOST', 'NIGHT', 'QUEEN', 'ROUND'],
+                hard: ['JAZZY', 'FIZZY', 'FUZZY', 'DIZZY', 'GLYPH', 'NYMPH', 'WALTZ', 'BLITZ', 'FJORD', 'PSYCH']
             },
             6: {
-                easy: ['ANIMAL', 'BASKET', 'CASTLE', 'DOCTOR', 'ENGINE', 'FLOWER', 'GARDEN', 'ISLAND', 'JUNGLE', 'LAPTOP', 'MARKET', 'NATURE', 'ORANGE', 'PLANET', 'RABBIT', 'SCHOOL', 'SUMMER', 'TURTLE', 'WINTER', 'BANANA'],
-                medium: ['BATTLE', 'CHANCE', 'DEBATE', 'EXTENT', 'FIERCE', 'GROWTH', 'IMPACT', 'LAWYER', 'MUSCLE', 'OBTAIN', 'POLICY', 'RANDOM', 'STABLE', 'TREATY', 'URGENT', 'VENDOR', 'WEALTH', 'ANCHOR', 'BRONZE', 'CARBON'],
-                hard: ['BUZZED', 'FIZZLE', 'JAZZED', 'MUZZLE', 'NUZZLE', 'PUZZLE', 'RHYTHM', 'SYZYGY', 'TWISTY', 'WAFFLE', 'ZOMBIE', 'OXYGEN', 'ZEPHYR', 'ENZYME', 'QUARTZ', 'SPHINX', 'FRENZY', 'BREEZE', 'FREEZE', 'SNEEZE']
+                easy: ['ANIMAL', 'BASKET', 'CASTLE', 'DOCTOR', 'ENGINE', 'FLOWER', 'GARDEN', 'ISLAND', 'JUNGLE', 'LAPTOP'],
+                medium: ['BATTLE', 'CHANCE', 'DEBATE', 'FIERCE', 'GROWTH', 'IMPACT', 'LAWYER', 'MUSCLE', 'RANDOM', 'STABLE'],
+                hard: ['BUZZED', 'FIZZLE', 'JAZZED', 'MUZZLE', 'PUZZLE', 'RHYTHM', 'ZOMBIE', 'OXYGEN', 'ZEPHYR', 'QUARTZ']
             }
         };
 
-        // ============ GAME STATE ============
         let state = {
             gridSize: 5,
             difficulty: 'medium',
@@ -655,41 +574,31 @@
             guesses: [],
             currentGuess: '',
             gameStatus: 'playing',
-            stats: null,
+            stats: {},
             points: 0
         };
 
-        // ============ INITIALIZATION ============
         function init() {
-            // Telegram WebApp
             if (window.Telegram && window.Telegram.WebApp) {
-                const tg = window.Telegram.WebApp;
-                tg.ready();
-                tg.expand();
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
             }
-
             loadStats();
             selectNewWord();
-            renderGrid();
-            renderKeyboard();
-            renderAttemptDots();
-            renderSettingsButtons();
-            updateUI();
-            setupEventListeners();
+            renderAll();
+            setupEvents();
         }
 
         function loadStats() {
             try {
                 const saved = localStorage.getItem('wordleStats');
-                if (saved) {
-                    state.stats = JSON.parse(saved);
-                }
+                if (saved) state.stats = JSON.parse(saved);
             } catch (e) {}
-
-            if (!state.stats) {
+            
+            if (!state.stats || !state.stats[3]) {
                 state.stats = {};
-                [3, 4, 5, 6].forEach(size => {
-                    state.stats[size] = {
+                [3, 4, 5, 6].forEach(s => {
+                    state.stats[s] = {
                         easy: { played: 0, won: 0, streak: 0 },
                         medium: { played: 0, won: 0, streak: 0 },
                         hard: { played: 0, won: 0, streak: 0 }
@@ -699,9 +608,7 @@
         }
 
         function saveStats() {
-            try {
-                localStorage.setItem('wordleStats', JSON.stringify(state.stats));
-            } catch (e) {}
+            try { localStorage.setItem('wordleStats', JSON.stringify(state.stats)); } catch (e) {}
         }
 
         function selectNewWord() {
@@ -709,285 +616,188 @@
             state.targetWord = words[Math.floor(Math.random() * words.length)];
         }
 
-        // ============ RENDERING ============
+        function renderAll() {
+            renderGrid();
+            renderKeyboard();
+            renderAttemptDots();
+            updateUI();
+        }
+
         function renderGrid() {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
+            grid.className = 'grid size-' + state.gridSize;
 
-            for (let row = 0; row < 6; row++) {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'row';
-                rowDiv.id = `row-${row}`;
+            for (let r = 0; r < 6; r++) {
+                const row = document.createElement('div');
+                row.className = 'row';
+                row.id = 'row-' + r;
 
-                for (let col = 0; col < state.gridSize; col++) {
+                for (let c = 0; c < state.gridSize; c++) {
                     const cell = document.createElement('div');
-                    cell.className = `cell size-${state.gridSize}`;
-                    cell.id = `cell-${row}-${col}`;
-                    rowDiv.appendChild(cell);
-                }
-                grid.appendChild(rowDiv);
-            }
-
-            updateGrid();
-        }
-
-        function updateGrid() {
-            for (let row = 0; row < 6; row++) {
-                for (let col = 0; col < state.gridSize; col++) {
-                    const cell = document.getElementById(`cell-${row}-${col}`);
-                    if (!cell) continue;
-
-                    // Reset classes
-                    cell.className = `cell size-${state.gridSize}`;
-                    cell.textContent = '';
-
-                    if (row < state.guesses.length) {
-                        // Submitted row
-                        const letter = state.guesses[row][col];
+                    cell.className = 'cell';
+                    cell.id = 'cell-' + r + '-' + c;
+                    
+                    // Заполняем ячейки
+                    if (r < state.guesses.length) {
+                        const letter = state.guesses[r][c];
                         cell.textContent = letter;
-                        const status = getLetterStatus(letter, col, state.guesses[row]);
-                        cell.classList.add(status);
-                        cell.style.animationDelay = `${col * 0.1}s`;
-                    } else if (row === state.guesses.length) {
-                        // Current input row
-                        const letter = state.currentGuess[col] || '';
-                        cell.textContent = letter;
-                        if (letter) {
-                            cell.classList.add('filled');
-                        }
+                        cell.classList.add(getStatus(letter, c, state.guesses[r]));
+                    } else if (r === state.guesses.length && c < state.currentGuess.length) {
+                        cell.textContent = state.currentGuess[c];
+                        cell.classList.add('filled');
                     }
+                    
+                    row.appendChild(cell);
                 }
+                grid.appendChild(row);
             }
         }
 
         function renderKeyboard() {
-            const keyboard = document.getElementById('keyboard');
-            keyboard.innerHTML = '';
-
+            const kb = document.getElementById('keyboard');
+            kb.innerHTML = '';
+            
             const rows = [
-                ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-                ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '⌫']
+                ['Q','W','E','R','T','Y','U','I','O','P'],
+                ['A','S','D','F','G','H','J','K','L'],
+                ['ENTER','Z','X','C','V','B','N','M','⌫']
             ];
 
             rows.forEach(row => {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'keyboard-row';
-
+                const div = document.createElement('div');
+                div.className = 'keyboard-row';
+                
                 row.forEach(key => {
                     const btn = document.createElement('button');
                     btn.className = 'key';
                     btn.textContent = key;
                     btn.dataset.key = key;
-
-                    if (key === 'ENTER' || key === '⌫') {
-                        btn.classList.add('wide');
+                    if (key === 'ENTER' || key === '⌫') btn.classList.add('wide');
+                    if (key.length === 1) {
+                        const s = getKeyStatus(key);
+                        if (s) btn.classList.add(s);
                     }
-
-                    btn.addEventListener('click', () => handleKey(key));
-                    rowDiv.appendChild(btn);
+                    btn.disabled = state.gameStatus !== 'playing';
+                    btn.onclick = () => handleKey(key);
+                    div.appendChild(btn);
                 });
-
-                keyboard.appendChild(rowDiv);
-            });
-
-            updateKeyboard();
-        }
-
-        function updateKeyboard() {
-            document.querySelectorAll('.key').forEach(btn => {
-                const key = btn.dataset.key;
-                btn.disabled = state.gameStatus !== 'playing';
                 
-                if (key && key.length === 1 && key !== '⌫') {
-                    btn.classList.remove('correct', 'present', 'absent');
-                    const status = getKeyStatus(key);
-                    if (status) {
-                        btn.classList.add(status);
-                    }
-                }
+                kb.appendChild(div);
             });
         }
 
         function renderAttemptDots() {
             const container = document.getElementById('attemptDots');
             container.innerHTML = '';
-
+            
             for (let i = 0; i < 6; i++) {
                 const dot = document.createElement('div');
                 dot.className = 'attempt-dot';
-                
                 if (i < state.guesses.length) {
-                    if (state.gameStatus === 'won' && i === state.guesses.length - 1) {
-                        dot.classList.add('won');
-                    } else {
-                        dot.classList.add('used');
-                    }
+                    dot.classList.add(state.gameStatus === 'won' && i === state.guesses.length - 1 ? 'won' : 'used');
                 }
-                
                 container.appendChild(dot);
             }
         }
 
-        function renderSettingsButtons() {
-            // Size buttons
-            const sizeContainer = document.getElementById('sizeButtons');
-            sizeContainer.innerHTML = '';
-            [3, 4, 5, 6].forEach(size => {
-                const btn = document.createElement('button');
-                btn.className = 'settings-btn' + (state.gridSize === size ? ' active' : '');
-                btn.textContent = `${size}×6`;
-                btn.onclick = () => changeSize(size);
-                sizeContainer.appendChild(btn);
-            });
-
-            // Difficulty buttons
-            const diffContainer = document.getElementById('diffButtons');
-            diffContainer.innerHTML = '';
-            
-            const diffConfig = [
-                { key: 'easy', emoji: '⭐', label: 'Easy' },
-                { key: 'medium', emoji: '⚡', label: 'Medium' },
-                { key: 'hard', emoji: '🔥', label: 'Hard' }
-            ];
-            
-            diffConfig.forEach(({ key, emoji, label }) => {
-                const btn = document.createElement('button');
-                btn.className = 'diff-btn' + (state.difficulty === key ? ' active' : '');
-                
-                const stats = state.stats[state.gridSize][key];
-                btn.innerHTML = `
-                    <span class="label">${emoji} ${label}</span>
-                    <span class="stats">${stats.won}/${stats.played} wins</span>
-                `;
-                btn.onclick = () => changeDifficulty(key);
-                diffContainer.appendChild(btn);
-            });
-        }
-
         function updateUI() {
-            const diffBadge = document.getElementById('diffBadge');
-            diffBadge.textContent = state.difficulty.charAt(0).toUpperCase() + state.difficulty.slice(1);
-            diffBadge.className = `info-badge ${state.difficulty}`;
-
-            document.getElementById('sizeBadge').textContent = `${state.gridSize}×6`;
-            document.getElementById('streakBadge').textContent = `🔥 ${state.stats[state.gridSize][state.difficulty].streak}`;
+            const badge = document.getElementById('diffBadge');
+            badge.textContent = state.difficulty.charAt(0).toUpperCase() + state.difficulty.slice(1);
+            badge.className = 'info-badge ' + state.difficulty;
+            
+            document.getElementById('sizeBadge').textContent = state.gridSize + '×6';
+            document.getElementById('streakBadge').textContent = '🔥 ' + state.stats[state.gridSize][state.difficulty].streak;
         }
 
-        // ============ GAME LOGIC ============
-        function getLetterStatus(letter, index, guess) {
+        function getStatus(letter, index, guess) {
             if (state.targetWord[index] === letter) return 'correct';
             if (state.targetWord.includes(letter)) return 'present';
             return 'absent';
         }
 
         function getKeyStatus(letter) {
-            let bestStatus = null;
-            
+            let best = null;
             for (const guess of state.guesses) {
                 for (let i = 0; i < guess.length; i++) {
                     if (guess[i] === letter) {
-                        const status = getLetterStatus(letter, i, guess);
-                        if (status === 'correct') return 'correct';
-                        if (status === 'present') bestStatus = 'present';
-                        if (status === 'absent' && !bestStatus) bestStatus = 'absent';
+                        const s = getStatus(letter, i, guess);
+                        if (s === 'correct') return 'correct';
+                        if (s === 'present') best = 'present';
+                        if (s === 'absent' && !best) best = 'absent';
                     }
                 }
             }
-            
-            return bestStatus;
+            return best;
         }
 
         function handleKey(key) {
             if (state.gameStatus !== 'playing') return;
-
+            
             if (key === 'ENTER') {
                 submitGuess();
             } else if (key === '⌫' || key === 'BACKSPACE') {
                 state.currentGuess = state.currentGuess.slice(0, -1);
-                updateGrid();
-            } else if (key.length === 1 && /[A-Z]/i.test(key) && state.currentGuess.length < state.gridSize) {
+                renderGrid();
+            } else if (/^[A-Z]$/i.test(key) && state.currentGuess.length < state.gridSize) {
                 state.currentGuess += key.toUpperCase();
-                updateGrid();
-                
-                // Add pop animation to current cell
-                const cell = document.getElementById(`cell-${state.guesses.length}-${state.currentGuess.length - 1}`);
-                if (cell) {
-                    cell.classList.add('pop');
-                    setTimeout(() => cell.classList.remove('pop'), 150);
-                }
+                renderGrid();
             }
         }
 
         function submitGuess() {
             if (state.currentGuess.length !== state.gridSize) {
-                shakeCurrentRow();
-                showMessage(`Word must be ${state.gridSize} letters! ✏️`);
+                shake();
+                showMsg('Need ' + state.gridSize + ' letters!');
                 return;
             }
-
+            
             if (state.guesses.includes(state.currentGuess)) {
-                shakeCurrentRow();
-                showMessage('Already guessed! 🤔');
+                shake();
+                showMsg('Already tried!');
                 return;
             }
 
             state.guesses.push(state.currentGuess);
             
-            // Check win/loss
             if (state.currentGuess === state.targetWord) {
                 state.gameStatus = 'won';
-                state.points = calculatePoints();
+                state.points = calcPoints();
                 state.stats[state.gridSize][state.difficulty].played++;
                 state.stats[state.gridSize][state.difficulty].won++;
                 state.stats[state.gridSize][state.difficulty].streak++;
                 saveStats();
-                
-                // Haptic
+                setTimeout(() => showResult(true), 500);
                 if (window.Telegram?.WebApp?.HapticFeedback) {
                     window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
                 }
-                
-                setTimeout(() => showResult(true), 600);
             } else if (state.guesses.length >= 6) {
                 state.gameStatus = 'lost';
                 state.stats[state.gridSize][state.difficulty].played++;
                 state.stats[state.gridSize][state.difficulty].streak = 0;
                 saveStats();
-                
-                if (window.Telegram?.WebApp?.HapticFeedback) {
-                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('error');
-                }
-                
-                setTimeout(() => showResult(false), 600);
+                setTimeout(() => showResult(false), 500);
             }
 
             state.currentGuess = '';
-            updateGrid();
-            updateKeyboard();
-            renderAttemptDots();
-            updateUI();
+            renderAll();
         }
 
-        function calculatePoints() {
-            const base = {
-                3: { easy: 50, medium: 100, hard: 150 },
-                4: { easy: 75, medium: 150, hard: 225 },
-                5: { easy: 100, medium: 200, hard: 300 },
-                6: { easy: 125, medium: 250, hard: 375 }
-            };
-            return base[state.gridSize][state.difficulty] * (7 - state.guesses.length);
+        function calcPoints() {
+            const base = { 3: 100, 4: 150, 5: 200, 6: 250 };
+            const mult = { easy: 1, medium: 2, hard: 3 };
+            return base[state.gridSize] * mult[state.difficulty] * (7 - state.guesses.length);
         }
 
-        function shakeCurrentRow() {
-            const row = document.getElementById(`row-${state.guesses.length}`);
+        function shake() {
+            const row = document.getElementById('row-' + state.guesses.length);
             if (row) {
                 row.classList.add('shake');
                 setTimeout(() => row.classList.remove('shake'), 400);
             }
         }
 
-        function showMessage(text) {
+        function showMsg(text) {
             const msg = document.getElementById('message');
             msg.textContent = text;
             msg.classList.remove('hidden');
@@ -997,10 +807,8 @@
         function showResult(won) {
             document.getElementById('resultEmoji').textContent = won ? '🎉' : '😢';
             document.getElementById('resultTitle').textContent = won ? 'Amazing!' : 'Game Over';
-            document.getElementById('resultTitle').className = `result-title ${won ? 'won' : 'lost'}`;
-            document.getElementById('resultText').textContent = won 
-                ? `You got it in ${state.guesses.length} ${state.guesses.length === 1 ? 'try' : 'tries'}!` 
-                : 'The word was:';
+            document.getElementById('resultTitle').className = 'result-title ' + (won ? 'won' : 'lost');
+            document.getElementById('resultText').textContent = won ? 'You got it in ' + state.guesses.length + ' tries!' : 'The word was:';
             
             const wordEl = document.getElementById('resultWord');
             if (won) {
@@ -1010,78 +818,40 @@
                 wordEl.classList.remove('hidden');
             }
             
-            document.getElementById('resultPoints').textContent = won ? `+${state.points} points 🏆` : '';
+            document.getElementById('resultPoints').textContent = won ? '+' + state.points + ' pts 🏆' : '';
             document.getElementById('resultPanel').classList.remove('hidden');
         }
 
-        // ============ GAME CONTROLS ============
         function resetGame() {
             state.guesses = [];
             state.currentGuess = '';
             state.gameStatus = 'playing';
             state.points = 0;
-            
             document.getElementById('resultPanel').classList.add('hidden');
-            
             selectNewWord();
-            renderGrid();
-            updateKeyboard();
-            renderAttemptDots();
-            updateUI();
-        }
-
-        function changeSize(size) {
-            if (size === state.gridSize) return;
-            state.gridSize = size;
-            state.guesses = [];
-            state.currentGuess = '';
-            state.gameStatus = 'playing';
-            selectNewWord();
-            renderGrid();
-            renderSettingsButtons();
-            updateKeyboard();
-            renderAttemptDots();
-            updateUI();
-        }
-
-        function changeDifficulty(diff) {
-            if (diff === state.difficulty) return;
-            state.difficulty = diff;
-            state.guesses = [];
-            state.currentGuess = '';
-            state.gameStatus = 'playing';
-            selectNewWord();
-            renderGrid();
-            renderSettingsButtons();
-            updateKeyboard();
-            renderAttemptDots();
-            updateUI();
+            renderAll();
         }
 
         function shareResult() {
             let grid = '';
-            state.guesses.forEach(guess => {
-                for (let i = 0; i < guess.length; i++) {
-                    const status = getLetterStatus(guess[i], i, guess);
-                    grid += status === 'correct' ? '🟦' : status === 'present' ? '🟨' : '⬜';
+            state.guesses.forEach(g => {
+                for (let i = 0; i < g.length; i++) {
+                    const s = getStatus(g[i], i, g);
+                    grid += s === 'correct' ? '🟦' : s === 'present' ? '🟨' : '⬜';
                 }
                 grid += '\n';
             });
-
-            const statusText = state.gameStatus === 'won' ? `${state.guesses.length}/6` : 'X/6';
-            const text = `🎮 Wordle ${state.gridSize}×6 ${statusText}\n📊 ${state.difficulty}\n\n${grid}\n🎯 Play: t.me/wordletgapp_bot/wordle`;
-
+            
+            const text = '🎮 Wordle ' + state.gridSize + '×6 ' + (state.gameStatus === 'won' ? state.guesses.length + '/6' : 'X/6') + '\n' + state.difficulty + '\n\n' + grid;
+            
             if (window.Telegram?.WebApp) {
-                const shareUrl = `https://t.me/share/url?url=${encodeURIComponent('https://t.me/wordletgapp_bot/wordle')}&text=${encodeURIComponent(text)}`;
-                window.Telegram.WebApp.openTelegramLink(shareUrl);
-            } else if (navigator.share) {
-                navigator.share({ text }).catch(() => {});
+                window.Telegram.WebApp.openTelegramLink('https://t.me/share/url?text=' + encodeURIComponent(text));
             } else if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(() => showMessage('📋 Copied!'));
+                navigator.clipboard.writeText(text);
+                showMsg('Copied!');
             }
         }
 
-        // ============ MODALS ============
         function toggleInstructions() {
             document.getElementById('instructions').classList.toggle('hidden');
         }
@@ -1095,36 +865,48 @@
             document.getElementById('settingsModal').classList.add('hidden');
         }
 
-        // ============ EVENTS ============
-        function setupEventListeners() {
-            document.getElementById('helpBtn').addEventListener('click', toggleInstructions);
-            document.getElementById('settingsBtn').addEventListener('click', openSettings);
-            document.getElementById('statsBtn').addEventListener('click', openSettings);
-
-            // Physical keyboard
-            document.addEventListener('keydown', (e) => {
-                if (state.gameStatus !== 'playing') return;
-                if (!document.getElementById('settingsModal').classList.contains('hidden')) return;
-
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleKey('ENTER');
-                } else if (e.key === 'Backspace') {
-                    e.preventDefault();
-                    handleKey('BACKSPACE');
-                } else if (/^[a-zA-Z]$/.test(e.key)) {
-                    e.preventDefault();
-                    handleKey(e.key.toUpperCase());
-                }
+        function renderSettingsButtons() {
+            const sizeDiv = document.getElementById('sizeButtons');
+            sizeDiv.innerHTML = '';
+            [3,4,5,6].forEach(s => {
+                const btn = document.createElement('button');
+                btn.className = 'settings-btn' + (state.gridSize === s ? ' active' : '');
+                btn.textContent = s + '×6';
+                btn.onclick = () => { state.gridSize = s; resetGame(); renderSettingsButtons(); };
+                sizeDiv.appendChild(btn);
             });
 
-            // Close modal on backdrop
-            document.getElementById('settingsModal').addEventListener('click', (e) => {
-                if (e.target.id === 'settingsModal') closeSettings();
+            const diffDiv = document.getElementById('diffButtons');
+            diffDiv.innerHTML = '';
+            ['easy','medium','hard'].forEach(d => {
+                const btn = document.createElement('button');
+                btn.className = 'diff-btn' + (state.difficulty === d ? ' active' : '');
+                const st = state.stats[state.gridSize][d];
+                btn.innerHTML = '<span>' + (d === 'easy' ? '⭐' : d === 'medium' ? '⚡' : '🔥') + ' ' + d.charAt(0).toUpperCase() + d.slice(1) + '</span><span class="stats">' + st.won + '/' + st.played + '</span>';
+                btn.onclick = () => { state.difficulty = d; resetGame(); renderSettingsButtons(); };
+                diffDiv.appendChild(btn);
             });
         }
 
-        // ============ START ============
+        function setupEvents() {
+            document.getElementById('helpBtn').onclick = toggleInstructions;
+            document.getElementById('settingsBtn').onclick = openSettings;
+            document.getElementById('statsBtn').onclick = openSettings;
+            
+            document.addEventListener('keydown', e => {
+                if (state.gameStatus !== 'playing') return;
+                if (!document.getElementById('settingsModal').classList.contains('hidden')) return;
+                
+                if (e.key === 'Enter') { e.preventDefault(); handleKey('ENTER'); }
+                else if (e.key === 'Backspace') { e.preventDefault(); handleKey('BACKSPACE'); }
+                else if (/^[a-zA-Z]$/.test(e.key)) { e.preventDefault(); handleKey(e.key.toUpperCase()); }
+            });
+            
+            document.getElementById('settingsModal').onclick = e => {
+                if (e.target.id === 'settingsModal') closeSettings();
+            };
+        }
+
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
