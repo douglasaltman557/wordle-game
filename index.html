@@ -4,154 +4,562 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Wordle Game</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-        }
-        html, body {
             margin: 0;
             padding: 0;
+        }
+        
+        html, body {
             width: 100%;
             height: 100%;
             overflow: hidden;
-            position: fixed;
-            overscroll-behavior: none;
-            touch-action: manipulation;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 50%, #1e1b4b 100%);
+            color: white;
         }
-        #root {
+        
+        #app {
             width: 100%;
             height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
+            padding: 12px;
+            padding-bottom: 140px;
         }
-        @keyframes fall {
-            0% { 
-                transform: translateY(-20px) rotate(0deg);
-                opacity: 1;
-            }
-            100% { 
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(to right, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        @keyframes pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+        
+        .header-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: background 0.2s;
         }
+        
+        .header-btn:active {
+            background: rgba(255,255,255,0.2);
+            transform: scale(0.95);
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .info-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .info-badge.easy { color: #4ade80; }
+        .info-badge.medium { color: #facc15; }
+        .info-badge.hard { color: #f87171; }
+        
+        .grid-container {
+            max-width: 350px;
+            margin: 0 auto 16px;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .row {
+            display: grid;
+            gap: 6px;
+        }
+        
+        .cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-radius: 8px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        
+        .cell.size-3 { font-size: 32px; }
+        .cell.size-4 { font-size: 28px; }
+        .cell.size-5 { font-size: 24px; }
+        .cell.size-6 { font-size: 20px; }
+        
+        .cell.filled {
+            border-color: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.05);
+        }
+        
+        .cell.correct {
+            background: #3b82f6;
+            border-color: #60a5fa;
+            animation: flip 0.5s ease;
+        }
+        
+        .cell.present {
+            background: #eab308;
+            border-color: #facc15;
+            color: black;
+            animation: flip 0.5s ease;
+        }
+        
+        .cell.absent {
+            background: #4b5563;
+            border-color: #6b7280;
+            animation: flip 0.5s ease;
+        }
+        
         @keyframes flip {
             0% { transform: rotateX(0); }
             50% { transform: rotateX(90deg); }
             100% { transform: rotateX(0); }
         }
-        .shake { animation: shake 0.5s ease-in-out; }
-        .pop { animation: pop 0.15s ease-in-out; }
-        .flip { animation: flip 0.5s ease-in-out; }
-        .falling-emoji {
-            position: absolute;
-            animation: fall linear forwards;
-            pointer-events: none;
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
         
-        /* Telegram Web App theme support */
-        :root {
-            --tg-theme-bg-color: #1e1b4b;
-            --tg-theme-text-color: #ffffff;
-            --tg-theme-button-color: #7c3aed;
-            --tg-theme-button-text-color: #ffffff;
+        .row.shake {
+            animation: shake 0.5s ease;
         }
+        
+        .keyboard {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+        
+        .key {
+            min-width: 28px;
+            height: 48px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #475569;
+            color: white;
+            transition: all 0.15s;
+        }
+        
+        .key:active {
+            transform: scale(0.95);
+        }
+        
+        .key.wide {
+            min-width: 50px;
+            font-size: 12px;
+        }
+        
+        .key.correct {
+            background: #3b82f6;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+        
+        .key.present {
+            background: #eab308;
+            color: black;
+            box-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
+        }
+        
+        .key.absent {
+            background: #374151;
+        }
+        
+        .key:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .message {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 16px;
+        }
+        
+        .modal-content {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 360px;
+            width: 100%;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .modal h2 {
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+        
+        .modal p {
+            margin-bottom: 8px;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-primary {
+            background: #7c3aed;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #22c55e;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .result-panel {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .result-emoji {
+            font-size: 64px;
+            margin-bottom: 12px;
+        }
+        
+        .result-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .result-title.won { color: #4ade80; }
+        .result-title.lost { color: #f87171; }
+        
+        .result-word {
+            font-size: 32px;
+            font-weight: bold;
+            color: #facc15;
+            margin: 12px 0;
+        }
+        
+        .result-points {
+            font-size: 28px;
+            font-weight: bold;
+            color: #facc15;
+            margin-bottom: 16px;
+        }
+        
+        .settings-group {
+            margin-bottom: 16px;
+        }
+        
+        .settings-label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .settings-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        
+        .settings-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            transition: all 0.2s;
+        }
+        
+        .settings-btn.active {
+            background: #7c3aed;
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+        }
+        
+        .settings-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .diff-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .diff-btn {
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        
+        .diff-btn.active {
+            background: #7c3aed;
+        }
+        
+        .diff-btn .label { display: flex; align-items: center; gap: 8px; }
+        .diff-btn .stats { font-size: 12px; opacity: 0.7; }
+        
+        .attempts {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .attempt-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s;
+        }
+        
+        .attempt-dot.used {
+            background: #ef4444;
+        }
+        
+        .attempt-dot.won {
+            background: #22c55e;
+            transform: scale(1.2);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+
+        .instructions {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .instructions h3 {
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .color-sample {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .color-sample.blue { background: #3b82f6; }
+        .color-sample.yellow { background: #eab308; color: black; }
+        .color-sample.gray { background: #4b5563; }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="app">
+        <!-- Header -->
+        <div class="header">
+            <div style="display: flex; gap: 8px;">
+                <button class="header-btn" id="helpBtn">💡</button>
+                <button class="header-btn" id="settingsBtn">⚙️</button>
+            </div>
+            <h1>WORDLE</h1>
+            <button class="header-btn" id="statsBtn">🏆</button>
+        </div>
+        
+        <!-- Game Info -->
+        <div class="game-info">
+            <span class="info-badge" id="diffBadge">Medium</span>
+            <span class="info-badge" id="sizeBadge">5×6</span>
+            <span class="info-badge" id="streakBadge">🔥 0</span>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="instructions hidden" id="instructions">
+            <h3>💡 How to Play</h3>
+            <ul>
+                <li>• Guess the word in 6 tries</li>
+                <li>• <span class="color-sample blue">Blue</span> = correct position</li>
+                <li>• <span class="color-sample yellow">Yellow</span> = wrong position</li>
+                <li>• <span class="color-sample gray">Gray</span> = not in word</li>
+            </ul>
+            <button class="btn btn-secondary" style="width: 100%; margin-top: 12px;" onclick="toggleInstructions()">Got it!</button>
+        </div>
+        
+        <!-- Grid -->
+        <div class="grid-container">
+            <div class="grid" id="grid"></div>
+        </div>
+        
+        <!-- Result Panel -->
+        <div class="result-panel hidden" id="resultPanel">
+            <div class="result-emoji" id="resultEmoji">🎉</div>
+            <div class="result-title" id="resultTitle">Amazing!</div>
+            <p id="resultText">You found the word!</p>
+            <div class="result-word hidden" id="resultWord"></div>
+            <div class="result-points" id="resultPoints">+0 points</div>
+            <div class="modal-buttons">
+                <button class="btn btn-success" onclick="shareResult()">📤 Share</button>
+                <button class="btn btn-primary" onclick="resetGame()">🔄 Play Again</button>
+            </div>
+        </div>
+        
+        <!-- Keyboard -->
+        <div class="keyboard" id="keyboard"></div>
+        
+        <!-- Attempts -->
+        <div class="attempts">
+            <span>Attempts:</span>
+            <div id="attemptDots"></div>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal hidden" id="settingsModal">
+        <div class="modal-content">
+            <h2>⚙️ Settings</h2>
+            <div class="settings-group">
+                <div class="settings-label">Grid Size</div>
+                <div class="settings-buttons" id="sizeButtons"></div>
+            </div>
+            <div class="settings-group">
+                <div class="settings-label">Difficulty</div>
+                <div class="diff-buttons" id="diffButtons"></div>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="closeSettings()">Close</button>
+        </div>
+    </div>
+    
+    <!-- Message Toast -->
+    <div class="message hidden" id="message"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect, useCallback, useMemo, useRef } = React;
-
-        // Icons (без изменений)
-        const Check = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-        );
-
-        const Delete = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
-                <line x1="18" y1="9" x2="12" y2="15"></line>
-                <line x1="12" y1="9" x2="18" y2="15"></line>
-            </svg>
-        );
-
-        const Trophy = ({ size = 24, className = '' }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-                <path d="M4 22h16"></path>
-                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
-                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
-                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-            </svg>
-        );
-
-        const Lightbulb = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path>
-                <path d="M9 18h6"></path>
-                <path d="M10 22h4"></path>
-            </svg>
-        );
-
-        const Gear = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"></path>
-            </svg>
-        );
-
-        const Award = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="8" r="7"></circle>
-                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-            </svg>
-        );
-
-        const Zap = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-            </svg>
-        );
-
-        const Star = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-            </svg>
-        );
-
-        const Share = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="18" cy="5" r="3"></circle>
-                <circle cx="6" cy="12" r="3"></circle>
-                <circle cx="18" cy="19" r="3"></circle>
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-            </svg>
-        );
-
-        // ИСПРАВЛЕННЫЕ Word Lists - все слова правильной длины
-        const WORD_LISTS = {
+    <script>
+        // ============ GAME STATE ============
+        const WORDS = {
             3: {
                 easy: ['CAT', 'DOG', 'SUN', 'CAR', 'BAT', 'HAT', 'PEN', 'CUP', 'BOX', 'FOX', 'BED', 'EGG', 'JAR', 'KEY', 'MAP', 'BAG', 'BUS', 'TOY', 'NET', 'POT'],
                 medium: ['WAX', 'ZEN', 'JOY', 'GYM', 'SKY', 'FLY', 'SPY', 'DRY', 'FRY', 'TRY', 'WHY', 'SHY', 'BUY', 'GUY', 'DAY', 'BAY', 'LAY', 'MAY', 'PAY', 'RAY'],
@@ -165,859 +573,479 @@
             5: {
                 easy: ['BREAD', 'MOUSE', 'HOUSE', 'PLANT', 'BEACH', 'DREAM', 'LIGHT', 'PAINT', 'WATCH', 'SMART', 'CLOCK', 'DANCE', 'FRUIT', 'HEART', 'OCEAN', 'PAPER', 'RIVER', 'SMILE', 'TABLE', 'WATER'],
                 medium: ['PLUSH', 'TRAIN', 'STONE', 'WORLD', 'CREAM', 'FRESH', 'GHOST', 'JOINT', 'NIGHT', 'QUEEN', 'ROUND', 'TRUST', 'YOUTH', 'SHARP', 'GRAND', 'CHUNK', 'DWARF', 'FRAME', 'GRASP', 'KNACK'],
-                // ИСПРАВЛЕНО: убран QUARTZ (6 букв), добавлены правильные 5-буквенные слова
                 hard: ['JAZZY', 'FIZZY', 'FUZZY', 'DIZZY', 'PROXY', 'GLYPH', 'NYMPH', 'CRYPT', 'LYMPH', 'PSYCH', 'WALTZ', 'BLITZ', 'FJORD', 'VODKA', 'WAXED', 'ZONED', 'MIXED', 'BOXED', 'VEXED', 'WINDY']
             },
             6: {
-                // ИСПРАВЛЕНО: убран KITCHEN (7 букв), добавлены правильные 6-буквенные слова
                 easy: ['ANIMAL', 'BASKET', 'CASTLE', 'DOCTOR', 'ENGINE', 'FLOWER', 'GARDEN', 'ISLAND', 'JUNGLE', 'LAPTOP', 'MARKET', 'NATURE', 'ORANGE', 'PLANET', 'RABBIT', 'SCHOOL', 'SUMMER', 'TURTLE', 'WINTER', 'BANANA'],
                 medium: ['BATTLE', 'CHANCE', 'DEBATE', 'EXTENT', 'FIERCE', 'GROWTH', 'IMPACT', 'LAWYER', 'MUSCLE', 'OBTAIN', 'POLICY', 'RANDOM', 'STABLE', 'TREATY', 'URGENT', 'VENDOR', 'WEALTH', 'ANCHOR', 'BRONZE', 'CARBON'],
-                hard: ['BUZZED', 'FIZZLE', 'JAZZED', 'MUZZLE', 'NUZZLE', 'PUZZLE', 'RHYTHM', 'SYZYGY', 'TWISTY', 'WAFFLE', 'ZOMBIE', 'OXYGEN', 'ZEPHYR', 'ENZYME', 'QUARTZ', 'KVETCH', 'PHLEGM', 'SPHINX', 'FRENZY', 'FREEZY']
+                hard: ['BUZZED', 'FIZZLE', 'JAZZED', 'MUZZLE', 'NUZZLE', 'PUZZLE', 'RHYTHM', 'SYZYGY', 'TWISTY', 'WAFFLE', 'ZOMBIE', 'OXYGEN', 'ZEPHYR', 'ENZYME', 'QUARTZ', 'SPHINX', 'FRENZY', 'PHLEGM', 'GROUCH', 'BREEZE']
             }
         };
 
-        // Компонент для анимации победы
-        const WinAnimation = ({ show }) => {
-            const [particles, setParticles] = useState([]);
-            
-            useEffect(() => {
-                if (show) {
-                    const emojis = ['🎉', '⭐', '🏆', '✨', '🎊'];
-                    const newParticles = Array.from({ length: 30 }, (_, i) => ({
-                        id: i,
-                        emoji: emojis[Math.floor(Math.random() * emojis.length)],
-                        left: Math.random() * 100,
-                        duration: 2 + Math.random() * 2,
-                        delay: Math.random() * 0.5
-                    }));
-                    setParticles(newParticles);
-                } else {
-                    setParticles([]);
-                }
-            }, [show]);
-
-            if (!show) return null;
-
-            return (
-                <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
-                    {particles.map(p => (
-                        <div
-                            key={p.id}
-                            className="falling-emoji"
-                            style={{
-                                left: `${p.left}%`,
-                                top: '-20px',
-                                animationDuration: `${p.duration}s`,
-                                animationDelay: `${p.delay}s`,
-                                fontSize: '2rem'
-                            }}
-                        >
-                            {p.emoji}
-                        </div>
-                    ))}
-                </div>
-            );
+        let state = {
+            gridSize: 5,
+            difficulty: 'medium',
+            targetWord: '',
+            guesses: [],
+            currentGuess: '',
+            gameStatus: 'playing',
+            stats: null,
+            points: 0
         };
 
-        // Main Component
-        function WordleGame() {
-            const [gridSize, setGridSize] = useState(5);
-            const [difficulty, setDifficulty] = useState('medium');
-            const [targetWord, setTargetWord] = useState('');
-            const [guesses, setGuesses] = useState([]);
-            const [currentGuess, setCurrentGuess] = useState('');
-            const [gameStatus, setGameStatus] = useState('playing');
-            const [showInstructions, setShowInstructions] = useState(false);
-            const [showSettings, setShowSettings] = useState(false);
-            const [showLeaderboard, setShowLeaderboard] = useState(false);
-            const [stats, setStats] = useState({ 
-                3: { easy: { played: 0, won: 0, streak: 0 }, medium: { played: 0, won: 0, streak: 0 }, hard: { played: 0, won: 0, streak: 0 } },
-                4: { easy: { played: 0, won: 0, streak: 0 }, medium: { played: 0, won: 0, streak: 0 }, hard: { played: 0, won: 0, streak: 0 } },
-                5: { easy: { played: 0, won: 0, streak: 0 }, medium: { played: 0, won: 0, streak: 0 }, hard: { played: 0, won: 0, streak: 0 } },
-                6: { easy: { played: 0, won: 0, streak: 0 }, medium: { played: 0, won: 0, streak: 0 }, hard: { played: 0, won: 0, streak: 0 } }
-            });
-            const [leaderboard, setLeaderboard] = useState([]);
-            const [playerName, setPlayerName] = useState('');
-            const [showNameInput, setShowNameInput] = useState(false);
-            const [winAnimation, setWinAnimation] = useState(false);
-            const [shakeRow, setShakeRow] = useState(false);
-            const [points, setPoints] = useState(0);
-            const [message, setMessage] = useState('');
-            
-            const inputRef = useRef(null);
+        // ============ INITIALIZATION ============
+        function init() {
+            // Telegram WebApp
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.ready();
+                tg.expand();
+            }
 
-            // Telegram Web App initialization
-            useEffect(() => {
-                if (window.Telegram?.WebApp) {
-                    const tg = window.Telegram.WebApp;
-                    tg.ready();
-                    tg.expand();
-                    tg.enableClosingConfirmation();
-                    
-                    // Применяем тему Telegram
-                    if (tg.themeParams) {
-                        document.documentElement.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#1e1b4b');
-                        document.documentElement.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#ffffff');
-                    }
-                    
-                    // Получаем имя пользователя из Telegram
-                    if (tg.initDataUnsafe?.user?.first_name) {
-                        const tgName = tg.initDataUnsafe.user.first_name;
-                        if (!localStorage.getItem('playerName')) {
-                            setPlayerName(tgName);
-                            localStorage.setItem('playerName', tgName);
-                        }
-                    }
-                }
-                loadGame();
-            }, []);
-
-            useEffect(() => {
-                if (targetWord === '' || targetWord.length !== gridSize) {
-                    selectNewWord();
-                }
-            }, [difficulty, gridSize]);
-
-            // Обработка физической клавиатуры
-            useEffect(() => {
-                const handleKeyDown = (e) => {
-                    if (gameStatus !== 'playing') return;
-                    if (showNameInput || showSettings || showInstructions || showLeaderboard) return;
-                    
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        submitGuess();
-                    } else if (e.key === 'Backspace') {
-                        e.preventDefault();
-                        setCurrentGuess(prev => prev.slice(0, -1));
-                    } else if (/^[a-zA-Z]$/.test(e.key) && currentGuess.length < gridSize) {
-                        e.preventDefault();
-                        setCurrentGuess(prev => prev + e.key.toUpperCase());
-                    }
-                };
-
-                window.addEventListener('keydown', handleKeyDown);
-                return () => window.removeEventListener('keydown', handleKeyDown);
-            }, [gameStatus, currentGuess, gridSize, showNameInput, showSettings, showInstructions, showLeaderboard]);
-
-            const showMessage = useCallback((msg, duration = 2000) => {
-                setMessage(msg);
-                setTimeout(() => setMessage(''), duration);
-            }, []);
-
-            const loadGame = () => {
-                try {
-                    const savedStats = localStorage.getItem('wordleStats');
-                    if (savedStats) {
-                        setStats(JSON.parse(savedStats));
-                    }
-
-                    const savedName = localStorage.getItem('playerName');
-                    if (savedName) {
-                        setPlayerName(savedName);
-                    }
-
-                    const savedLeaderboard = localStorage.getItem('leaderboard');
-                    if (savedLeaderboard) {
-                        setLeaderboard(JSON.parse(savedLeaderboard));
-                    }
-                } catch (e) {
-                    console.error('Error loading game:', e);
-                }
-
-                selectNewWord();
-            };
-
-            const selectNewWord = useCallback(() => {
-                const words = WORD_LISTS[gridSize][difficulty];
-                const word = words[Math.floor(Math.random() * words.length)];
-                setTargetWord(word);
-            }, [gridSize, difficulty]);
-
-            const saveStats = useCallback((newStats) => {
-                setStats(newStats);
-                try {
-                    localStorage.setItem('wordleStats', JSON.stringify(newStats));
-                } catch (e) {
-                    console.error('Error saving stats:', e);
-                }
-            }, []);
-
-            const updateLeaderboard = useCallback((score) => {
-                if (!playerName) {
-                    setShowNameInput(true);
-                    return;
-                }
-
-                let currentLeaderboard = [...leaderboard];
-                
-                const existingIndex = currentLeaderboard.findIndex(entry => entry.name === playerName);
-                if (existingIndex >= 0) {
-                    if (score > currentLeaderboard[existingIndex].score) {
-                        currentLeaderboard[existingIndex].score = score;
-                        currentLeaderboard[existingIndex].difficulty = difficulty;
-                        currentLeaderboard[existingIndex].gridSize = gridSize;
-                    }
-                } else {
-                    currentLeaderboard.push({ name: playerName, score, difficulty, gridSize });
-                }
-
-                currentLeaderboard.sort((a, b) => b.score - a.score);
-                currentLeaderboard = currentLeaderboard.slice(0, 10);
-
-                try {
-                    localStorage.setItem('leaderboard', JSON.stringify(currentLeaderboard));
-                } catch (e) {
-                    console.error('Error saving leaderboard:', e);
-                }
-                setLeaderboard(currentLeaderboard);
-            }, [playerName, leaderboard, difficulty, gridSize]);
-
-            const saveName = useCallback(() => {
-                if (playerName.trim()) {
-                    try {
-                        localStorage.setItem('playerName', playerName.trim());
-                    } catch (e) {
-                        console.error('Error saving name:', e);
-                    }
-                    setShowNameInput(false);
-                    if (points > 0) {
-                        updateLeaderboard(points);
-                    }
-                }
-            }, [playerName, points, updateLeaderboard]);
-
-            const handleKeyPress = useCallback((key) => {
-                if (gameStatus !== 'playing') return;
-                
-                if (key === 'ENTER') {
-                    submitGuess();
-                } else if (key === 'BACK') {
-                    setCurrentGuess(prev => prev.slice(0, -1));
-                } else if (currentGuess.length < gridSize) {
-                    setCurrentGuess(prev => prev + key);
-                }
-            }, [gameStatus, currentGuess, gridSize]);
-
-            const calculatePoints = useCallback((attempts) => {
-                const basePoints = { 
-                    3: { easy: 50, medium: 100, hard: 150 },
-                    4: { easy: 75, medium: 150, hard: 225 },
-                    5: { easy: 100, medium: 200, hard: 300 },
-                    6: { easy: 125, medium: 250, hard: 375 }
-                };
-                const multiplier = 7 - attempts;
-                return basePoints[gridSize][difficulty] * multiplier;
-            }, [gridSize, difficulty]);
-
-            const getLetterStatus = useCallback((letter, index, word) => {
-                if (!targetWord) return 'empty';
-                if (word[index] === targetWord[index]) return 'correct';
-                if (targetWord.includes(letter)) return 'present';
-                return 'absent';
-            }, [targetWord]);
-
-            const shareResult = useCallback(() => {
-                const emoji = gameStatus === 'won' ? '🎉' : '😢';
-                const statusText = gameStatus === 'won' ? `Won in ${guesses.length}/6` : 'Lost';
-                
-                let grid = '';
-                guesses.forEach(guess => {
-                    guess.split('').forEach((letter, i) => {
-                        const status = getLetterStatus(letter, i, guess);
-                        if (status === 'correct') grid += '🟦';
-                        else if (status === 'present') grid += '🟨';
-                        else grid += '⬜';
-                    });
-                    grid += '\n';
-                });
-                
-                const shareText = `${emoji} Wordle ${gridSize}×6 ${statusText}\nDifficulty: ${difficulty}\nScore: ${points} pts\n\n${grid}\nPlay: https://t.me/wordletgapp_bot/wordle`;
-                
-                if (window.Telegram?.WebApp) {
-                    try {
-                        window.Telegram.WebApp.openTelegramLink(
-                            `https://t.me/share/url?url=${encodeURIComponent('https://t.me/wordletgapp_bot/wordle')}&text=${encodeURIComponent(shareText)}`
-                        );
-                    } catch (e) {
-                        fallbackShare(shareText);
-                    }
-                } else {
-                    fallbackShare(shareText);
-                }
-            }, [gameStatus, guesses, gridSize, difficulty, points, getLetterStatus]);
-
-                        const fallbackShare = (shareText) => {
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'Wordle Game Result',
-                        text: shareText
-                    }).catch(() => {
-                        copyToClipboard(shareText);
-                    });
-                } else {
-                    copyToClipboard(shareText);
-                }
-            };
-
-            const copyToClipboard = (text) => {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(() => {
-                        showMessage('📋 Result copied to clipboard!');
-                    }).catch(() => {
-                        showMessage('❌ Could not copy result');
-                    });
-                } else {
-                    // Fallback для старых браузеров
-                    const textArea = document.createElement('textarea');
-                    textArea.value = text;
-                    textArea.style.position = 'fixed';
-                    textArea.style.left = '-999999px';
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    try {
-                        document.execCommand('copy');
-                        showMessage('📋 Result copied to clipboard!');
-                    } catch (e) {
-                        showMessage('❌ Could not copy result');
-                    }
-                    document.body.removeChild(textArea);
-                }
-            };
-
-            const submitGuess = useCallback(() => {
-                if (currentGuess.length !== gridSize) {
-                    setShakeRow(true);
-                    showMessage(`Word must be ${gridSize} letters`);
-                    setTimeout(() => setShakeRow(false), 500);
-                    return;
-                }
-
-                // Проверка на повторное угадывание того же слова
-                if (guesses.includes(currentGuess)) {
-                    setShakeRow(true);
-                    showMessage('Already guessed this word!');
-                    setTimeout(() => setShakeRow(false), 500);
-                    return;
-                }
-                
-                const newGuesses = [...guesses, currentGuess];
-                setGuesses(newGuesses);
-                
-                if (currentGuess === targetWord) {
-                    setGameStatus('won');
-                    setWinAnimation(true);
-                    setTimeout(() => setWinAnimation(false), 3000);
-                    
-                    const earnedPoints = calculatePoints(newGuesses.length);
-                    setPoints(earnedPoints);
-                    
-                    // Вибрация при победе (если поддерживается)
-                    if (window.Telegram?.WebApp?.HapticFeedback) {
-                        window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-                    } else if (navigator.vibrate) {
-                        navigator.vibrate([100, 50, 100, 50, 100]);
-                    }
-                    
-                    const newStats = { ...stats };
-                    newStats[gridSize][difficulty].played += 1;
-                    newStats[gridSize][difficulty].won += 1;
-                    newStats[gridSize][difficulty].streak += 1;
-                    saveStats(newStats);
-                    
-                    if (playerName) {
-                        updateLeaderboard(earnedPoints);
-                    } else {
-                        setTimeout(() => setShowNameInput(true), 1500);
-                    }
-                } else if (newGuesses.length === 6) {
-                    setGameStatus('lost');
-                    
-                    // Вибрация при проигрыше
-                    if (window.Telegram?.WebApp?.HapticFeedback) {
-                        window.Telegram.WebApp.HapticFeedback.notificationOccurred('error');
-                    } else if (navigator.vibrate) {
-                        navigator.vibrate(300);
-                    }
-                    
-                    const newStats = { ...stats };
-                    newStats[gridSize][difficulty].played += 1;
-                    newStats[gridSize][difficulty].streak = 0;
-                    saveStats(newStats);
-                }
-                
-                setCurrentGuess('');
-            }, [currentGuess, gridSize, guesses, targetWord, calculatePoints, stats, playerName, saveStats, updateLeaderboard, showMessage]);
-
-            const resetGame = useCallback(() => {
-                selectNewWord();
-                setGuesses([]);
-                setCurrentGuess('');
-                setGameStatus('playing');
-                setPoints(0);
-                setWinAnimation(false);
-            }, [selectNewWord]);
-
-            const changeDifficulty = useCallback((newDifficulty) => {
-                setDifficulty(newDifficulty);
-                setGuesses([]);
-                setCurrentGuess('');
-                setGameStatus('playing');
-                setPoints(0);
-            }, []);
-
-            const changeGridSize = useCallback((newSize) => {
-                setGridSize(newSize);
-                setGuesses([]);
-                setCurrentGuess('');
-                setGameStatus('playing');
-                setPoints(0);
-            }, []);
-
-            const getKeyboardLetterStatus = useCallback((letter) => {
-                let status = 'unused';
-                guesses.forEach(guess => {
-                    guess.split('').forEach((l, i) => {
-                        if (l === letter) {
-                            if (targetWord && targetWord[i] === letter) {
-                                status = 'correct';
-                            } else if (targetWord && targetWord.includes(letter) && status !== 'correct') {
-                                status = 'present';
-                            } else if (status === 'unused') {
-                                status = 'absent';
-                            }
-                        }
-                    });
-                });
-                return status;
-            }, [guesses, targetWord]);
-
-            const getDifficultyColor = (diff) => {
-                if (diff === 'easy') return 'text-green-400';
-                if (diff === 'medium') return 'text-yellow-400';
-                return 'text-red-400';
-            };
-
-            const getDifficultyIcon = (diff) => {
-                if (diff === 'easy') return <Star size={16} />;
-                if (diff === 'medium') return <Zap size={16} />;
-                return <Award size={16} />;
-            };
-
-            const getCellSize = () => {
-                if (gridSize === 3) return 'text-3xl';
-                if (gridSize === 4) return 'text-2xl';
-                if (gridSize === 5) return 'text-xl';
-                return 'text-lg';
-            };
-
-            const getGridMaxWidth = () => {
-                if (gridSize === 3) return '180px';
-                if (gridSize === 4) return '240px';
-                if (gridSize === 5) return '300px';
-                return '360px';
-            };
-
-            const keyboard = [
-                ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-                ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACK']
-            ];
-
-            return (
-                <div className="w-full min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-3 pb-32" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 140px)' }}>
-                    
-                    {/* Win Animation */}
-                    <WinAnimation show={winAnimation} />
-
-                    {/* Toast Message */}
-                    {message && (
-                        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-black/80 text-white px-4 py-2 rounded-lg shadow-lg animate-pulse">
-                            {message}
-                        </div>
-                    )}
-
-                    {/* Header */}
-                    <div className="max-w-md mx-auto mb-4">
-                        <div className="flex items-center justify-between mb-3">
-                            <div className="flex gap-2">
-                                <button 
-                                    onClick={() => setShowInstructions(!showInstructions)} 
-                                    className="p-2 hover:bg-white/10 rounded-lg transition active:scale-95"
-                                    aria-label="Instructions"
-                                >
-                                    <Lightbulb size={24} />
-                                </button>
-                                <button 
-                                    onClick={() => setShowSettings(!showSettings)} 
-                                    className="p-2 hover:bg-white/10 rounded-lg transition active:scale-95"
-                                    aria-label="Settings"
-                                >
-                                    <Gear size={24} />
-                                </button>
-                            </div>
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                                WORDLE
-                            </h1>
-                            <button 
-                                onClick={() => setShowLeaderboard(!showLeaderboard)} 
-                                className="p-2 hover:bg-white/10 rounded-lg transition active:scale-95"
-                                aria-label="Leaderboard"
-                            >
-                                <Trophy size={24} className="text-yellow-400" />
-                            </button>
-                        </div>
-
-                        {/* Game Info Bar */}
-                        <div className="flex items-center justify-center gap-2 mb-3 flex-wrap">
-                            <div className={`flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full text-sm ${getDifficultyColor(difficulty)}`}>
-                                {getDifficultyIcon(difficulty)}
-                                <span className="font-semibold capitalize">{difficulty}</span>
-                            </div>
-                            <div className="px-3 py-1.5 bg-white/10 rounded-full text-sm">{gridSize}×6</div>
-                            <div className="text-sm text-white/60">
-                                Streak: {stats[gridSize][difficulty].streak} 🔥
-                            </div>
-                        </div>
-
-                        {/* Instructions Panel */}
-                        {showInstructions && (
-                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4 text-sm border border-white/20">
-                                <h3 className="font-bold mb-2 text-lg flex items-center gap-2">
-                                    💡 How to Play
-                                </h3>
-                                <ul className="space-y-2">
-                                    <li>• Guess the {gridSize}-letter word in 6 tries</li>
-                                    <li className="flex items-center gap-2">
-                                        • <span className="bg-blue-500 px-2 py-1 rounded text-xs">Blue</span> 
-                                        = correct letter, correct position
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        • <span className="bg-yellow-500 px-2 py-1 rounded text-black text-xs">Yellow</span> 
-                                        = correct letter, wrong position
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        • <span className="bg-gray-600 px-2 py-1 rounded text-xs">Gray</span> 
-                                        = letter not in word
-                                    </li>
-                                </ul>
-                                <button 
-                                    onClick={() => setShowInstructions(false)}
-                                    className="mt-3 w-full p-2 bg-white/10 hover:bg-white/20 rounded-lg transition"
-                                >
-                                    Got it!
-                                </button>
-                            </div>
-                        )}
-
-                        {/* Settings Panel */}
-                        {showSettings && (
-                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4 border border-white/20">
-                                <h3 className="font-bold mb-3 text-lg flex items-center gap-2">
-                                    ⚙️ Settings
-                                </h3>
-                                <div className="mb-4">
-                                    <p className="text-sm mb-2 font-semibold">Grid Size:</p>
-                                    <div className="grid grid-cols-4 gap-2">
-                                        {[3, 4, 5, 6].map(size => (
-                                            <button 
-                                                key={size} 
-                                                onClick={() => changeGridSize(size)} 
-                                                className={`p-3 rounded-lg font-semibold transition active:scale-95 ${
-                                                    gridSize === size 
-                                                        ? 'bg-blue-600 shadow-lg shadow-blue-600/30' 
-                                                        : 'bg-white/5 hover:bg-white/10'
-                                                }`}
-                                            >
-                                                {size}×6
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="text-sm mb-2 font-semibold">Difficulty:</p>
-                                    {['easy', 'medium', 'hard'].map(diff => (
-                                        <button 
-                                            key={diff} 
-                                            onClick={() => changeDifficulty(diff)} 
-                                            className={`w-full p-3 rounded-lg flex items-center justify-between transition active:scale-[0.98] ${
-                                                difficulty === diff 
-                                                    ? 'bg-purple-600 shadow-lg shadow-purple-600/30' 
-                                                    : 'bg-white/5 hover:bg-white/10'
-                                            }`}
-                                        >
-                                            <span className="flex items-center gap-2">
-                                                {getDifficultyIcon(diff)}
-                                                <span className="capitalize font-semibold">{diff}</span>
-                                            </span>
-                                            <span className="text-xs text-white/60">
-                                                {stats[gridSize][diff].won}/{stats[gridSize][diff].played} wins
-                                            </span>
-                                        </button>
-                                    ))}
-                                </div>
-                                <div className="mt-4 pt-4 border-t border-white/20">
-                                    <button 
-                                        onClick={() => setShowNameInput(true)} 
-                                        className="w-full p-3 bg-white/5 hover:bg-white/10 rounded-lg transition active:scale-[0.98]"
-                                    >
-                                        {playerName ? `Change Name (${playerName})` : 'Set Player Name'}
-                                    </button>
-                                </div>
-                                <button 
-                                    onClick={() => setShowSettings(false)}
-                                    className="mt-3 w-full p-2 bg-white/10 hover:bg-white/20 rounded-lg transition"
-                                >
-                                    Close
-                                </button>
-                            </div>
-                        )}
-
-                        {/* Leaderboard Panel */}
-                        {showLeaderboard && (
-                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-4 border border-white/20">
-                                <h3 className="font-bold mb-3 text-lg flex items-center gap-2">
-                                    <Trophy className="text-yellow-400" size={24} />
-                                    Leaderboard
-                                </h3>
-                                {leaderboard.length === 0 ? (
-                                    <p className="text-center text-white/60 py-4">
-                                        No scores yet. Be the first! 🏆
-                                    </p>
-                                ) : (
-                                    <div className="space-y-2 max-h-64 overflow-y-auto">
-                                        {leaderboard.map((entry, index) => (
-                                            <div 
-                                                key={index} 
-                                                className={`flex items-center justify-between p-3 rounded-lg transition ${
-                                                    index === 0 
-                                                        ? 'bg-yellow-500/20 border border-yellow-500/40' 
-                                                        : index === 1 
-                                                            ? 'bg-gray-300/20 border border-gray-300/40' 
-                                                            : index === 2 
-                                                                ? 'bg-orange-600/20 border border-orange-600/40' 
-                                                                : 'bg-white/5'
-                                                }`}
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <span className="text-2xl">
-                                                        {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`}
-                                                    </span>
-                                                    <div>
-                                                        <div className="font-semibold">{entry.name}</div>
-                                                        <div className="text-xs text-white/60">
-                                                            {entry.gridSize}×6 • {entry.difficulty}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="text-xl font-bold">{entry.score}</div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                                <button 
-                                    onClick={() => setShowLeaderboard(false)}
-                                    className="mt-3 w-full p-2 bg-white/10 hover:bg-white/20 rounded-lg transition"
-                                >
-                                    Close
-                                </button>
-                            </div>
-                        )}
-
-                        {/* Name Input Modal */}
-                        {showNameInput && (
-                            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                                <div className="bg-slate-800 rounded-lg p-6 w-full max-w-sm border border-white/20 shadow-xl">
-                                    <h3 className="font-bold mb-3 text-lg">Enter Your Name</h3>
-                                    <input 
-                                        type="text" 
-                                        value={playerName} 
-                                        onChange={(e) => setPlayerName(e.target.value)} 
-                                        onKeyDown={(e) => e.key === 'Enter' && saveName()} 
-                                        placeholder="Your name" 
-                                        className="w-full p-3 bg-white/10 border border-white/20 rounded-lg mb-3 text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition" 
-                                        maxLength={20}
-                                        autoFocus
-                                    />
-                                    <div className="flex gap-2">
-                                        <button 
-                                            onClick={saveName} 
-                                            className="flex-1 bg-purple-600 hover:bg-purple-700 p-3 rounded-lg font-semibold transition active:scale-95"
-                                        >
-                                            Save
-                                        </button>
-                                        <button 
-                                            onClick={() => setShowNameInput(false)} 
-                                            className="px-4 bg-white/5 hover:bg-white/10 rounded-lg transition active:scale-95"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Game Grid */}
-                    <div className="max-w-md mx-auto mb-4">
-                        <div 
-                            className="grid gap-1.5 mb-3 mx-auto" 
-                            style={{ maxWidth: getGridMaxWidth() }}
-                        >
-                            {[...Array(6)].map((_, rowIndex) => {
-                                const guess = guesses[rowIndex] || (rowIndex === guesses.length ? currentGuess : '');
-                                const isSubmitted = rowIndex < guesses.length;
-                                const isCurrentRow = rowIndex === guesses.length;
-                                
-                                return (
-                                    <div 
-                                        key={rowIndex} 
-                                        className={`grid gap-1.5 ${isCurrentRow && shakeRow ? 'shake' : ''}`} 
-                                        style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
-                                    >
-                                        {[...Array(gridSize)].map((_, colIndex) => {
-                                            const letter = guess[colIndex] || '';
-                                            const status = isSubmitted ? getLetterStatus(letter, colIndex, guess) : 'empty';
-                                            const hasLetter = letter && !isSubmitted;
-                                            
-                                            return (
-                                                <div 
-                                                    key={colIndex} 
-                                                    className={`
-                                                        aspect-square flex items-center justify-center 
-                                                        ${getCellSize()} font-bold rounded-lg border-2 
-                                                        transition-all duration-300
-                                                        ${status === 'correct' ? 'bg-blue-500 border-blue-400' : ''}
-                                                        ${status === 'present' ? 'bg-yellow-500 border-yellow-400 text-black' : ''}
-                                                        ${status === 'absent' ? 'bg-gray-600 border-gray-500' : ''}
-                                                        ${status === 'empty' ? 'bg-white/5 border-white/20' : ''}
-                                                        ${hasLetter ? 'border-white/40 scale-105 bg-white/10 pop' : ''}
-                                                        ${isSubmitted ? 'flip' : ''}
-                                                    `}
-                                                    style={isSubmitted ? { animationDelay: `${colIndex * 0.1}s` } : {}}
-                                                >
-                                                    {letter}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                );
-                            })}
-                        </div>
-
-                        {/* Game Over Panel */}
-                        {gameStatus !== 'playing' && (
-                            <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 mb-3 text-center border border-white/20">
-                                {gameStatus === 'won' ? (
-                                    <div>
-                                        <div className="text-6xl mb-3">🎉</div>
-                                        <h2 className="text-2xl font-bold text-green-400 mb-2">Amazing!</h2>
-                                        <p className="mb-2">You found the word in {guesses.length} {guesses.length === 1 ? 'try' : 'tries'}!</p>
-                                        <div className="text-3xl font-bold text-yellow-400 mb-4">+{points} points</div>
-                                        {playerName && (
-                                            <p className="text-sm text-white/60 mb-4">
-                                                Score saved to leaderboard!
-                                            </p>
-                                        )}
-                                        <div className="flex gap-2">
-                                            <button 
-                                                onClick={shareResult} 
-                                                className="flex-1 bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-                                            >
-                                                <Share size={20} />
-                                                Share
-                                            </button>
-                                            <button 
-                                                onClick={resetGame} 
-                                                className="flex-1 bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 active:scale-95"
-                                            >
-                                                Play Again
-                                            </button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <div className="text-6xl mb-3">😢</div>
-                                        <h2 className="text-2xl font-bold text-red-400 mb-2">Game Over</h2>
-                                        <p>The word was:</p>
-                                        <p className="font-bold text-3xl mt-2 mb-4 text-yellow-400">{targetWord}</p>
-                                        <div className="flex gap-2">
-                                            <button 
-                                                onClick={shareResult} 
-                                                className="flex-1 bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-                                            >
-                                                <Share size={20} />
-                                                Share
-                                            </button>
-                                            <button 
-                                                onClick={resetGame} 
-                                                className="flex-1 bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 active:scale-95"
-                                            >
-                                                Play Again
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Keyboard */}
-                    <div className="max-w-md mx-auto mb-4">
-                        {keyboard.map((row, rowIndex) => (
-                            <div key={rowIndex} className="flex justify-center gap-1 mb-1.5">
-                                {row.map(key => {
-                                    const status = key.length === 1 ? getKeyboardLetterStatus(key) : 'special';
-                                    const isSpecial = key === 'ENTER' || key === 'BACK';
-                                    
-                                    return (
-                                        <button 
-                                            key={key} 
-                                            onClick={() => handleKeyPress(key)} 
-                                            disabled={gameStatus !== 'playing'} 
-                                            className={`
-                                                px-2 py-3 rounded font-semibold transition-all transform 
-                                                active:scale-95 text-sm select-none
-                                                ${isSpecial ? 'px-3 text-xs' : 'min-w-[2rem]'}
-                                                ${status === 'correct' ? 'bg-blue-500 shadow-lg shadow-blue-500/50' : ''}
-                                                ${status === 'present' ? 'bg-yellow-500 shadow-lg shadow-yellow-500/50 text-black' : ''}
-                                                ${status === 'absent' ? 'bg-gray-600' : ''}
-                                                ${status === 'unused' ? 'bg-slate-600 hover:bg-slate-500' : ''}
-                                                ${status === 'special' ? 'bg-slate-700 hover:bg-slate-600' : ''}
-                                                ${gameStatus !== 'playing' ? 'opacity-50 cursor-not-allowed' : ''}
-                                            `}
-                                        >
-                                            {key === 'BACK' ? <Delete size={18} /> : key === 'ENTER' ? <Check size={18} /> : key}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Attempts Indicator */}
-                    <div className="max-w-md mx-auto mt-3 mb-20 flex items-center justify-center gap-2 text-sm">
-                        <span className="text-white/60">Attempts:</span>
-                        {[...Array(6)].map((_, i) => (
-                            <div 
-                                key={i} 
-                                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                                    i < guesses.length 
-                                        ? (gameStatus === 'won' && i === guesses.length - 1 
-                                            ? 'bg-green-500 scale-125' 
-                                            : 'bg-red-500') 
-                                        : 'bg-white/20'
-                                }`} 
-                            />
-                        ))}
-                    </div>
-                </div>
-            );
+            loadStats();
+            selectNewWord();
+            renderGrid();
+            renderKeyboard();
+            updateUI();
+            setupEventListeners();
+            renderAttemptDots();
+            renderSettingsButtons();
         }
 
-        // Render App
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<WordleGame />);
+        function loadStats() {
+            try {
+                const saved = localStorage.getItem('wordleStats');
+                if (saved) {
+                    state.stats = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.log('Could not load stats');
+            }
+
+            if (!state.stats) {
+                state.stats = {};
+                [3, 4, 5, 6].forEach(size => {
+                    state.stats[size] = {
+                        easy: { played: 0, won: 0, streak: 0 },
+                        medium: { played: 0, won: 0, streak: 0 },
+                        hard: { played: 0, won: 0, streak: 0 }
+                    };
+                });
+            }
+        }
+
+        function saveStats() {
+            try {
+                localStorage.setItem('wordleStats', JSON.stringify(state.stats));
+            } catch (e) {
+                console.log('Could not save stats');
+            }
+        }
+
+        function selectNewWord() {
+            const words = WORDS[state.gridSize][state.difficulty];
+            state.targetWord = words[Math.floor(Math.random() * words.length)];
+            console.log('Word:', state.targetWord); // Для отладки
+        }
+
+        // ============ RENDERING ============
+        function renderGrid() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            grid.style.gridTemplateColumns = `repeat(${state.gridSize}, 1fr)`;
+
+            for (let row = 0; row < 6; row++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
+                rowDiv.id = `row-${row}`;
+                rowDiv.style.gridTemplateColumns = `repeat(${state.gridSize}, 1fr)`;
+
+                for (let col = 0; col < state.gridSize; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = `cell size-${state.gridSize}`;
+                    cell.id = `cell-${row}-${col}`;
+                    rowDiv.appendChild(cell);
+                }
+                grid.appendChild(rowDiv);
+            }
+
+            updateGrid();
+        }
+
+        function updateGrid() {
+            for (let row = 0; row < 6; row++) {
+                for (let col = 0; col < state.gridSize; col++) {
+                    const cell = document.getElementById(`cell-${row}-${col}`);
+                    if (!cell) continue;
+
+                    cell.className = `cell size-${state.gridSize}`;
+                    cell.textContent = '';
+
+                    if (row < state.guesses.length) {
+                        // Submitted guess
+                        const letter = state.guesses[row][col];
+                        cell.textContent = letter;
+                        cell.classList.add(getLetterStatus(letter, col, state.guesses[row]));
+                        cell.style.animationDelay = `${col * 0.1}s`;
+                    } else if (row === state.guesses.length) {
+                        // Current guess
+                        const letter = state.currentGuess[col] || '';
+                        cell.textContent = letter;
+                        if (letter) {
+                            cell.classList.add('filled');
+                        }
+                    }
+                }
+            }
+        }
+
+        function renderKeyboard() {
+            const keyboard = document.getElementById('keyboard');
+            keyboard.innerHTML = '';
+
+            const rows = [
+                ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+                ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '⌫']
+            ];
+
+            rows.forEach(row => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'keyboard-row';
+
+                row.forEach(key => {
+                    const btn = document.createElement('button');
+                    btn.className = 'key';
+                    btn.textContent = key;
+                    btn.dataset.key = key;
+
+                    if (key === 'ENTER' || key === '⌫') {
+                        btn.classList.add('wide');
+                    }
+
+                    if (state.gameStatus !== 'playing') {
+                        btn.disabled = true;
+                    }
+
+                    btn.addEventListener('click', () => handleKey(key));
+                    rowDiv.appendChild(btn);
+                });
+
+                keyboard.appendChild(rowDiv);
+            });
+
+            updateKeyboard();
+        }
+
+        function updateKeyboard() {
+            document.querySelectorAll('.key').forEach(btn => {
+                const key = btn.dataset.key;
+                if (key.length === 1 && key !== '⌫') {
+                    btn.classList.remove('correct', 'present', 'absent');
+                    const status = getKeyStatus(key);
+                    if (status) {
+                        btn.classList.add(status);
+                    }
+                }
+                btn.disabled = state.gameStatus !== 'playing';
+            });
+        }
+
+        function renderAttemptDots() {
+            const container = document.getElementById('attemptDots');
+            container.innerHTML = '';
+
+            for (let i = 0; i < 6; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'attempt-dot';
+                
+                if (i < state.guesses.length) {
+                    if (state.gameStatus === 'won' && i === state.guesses.length - 1) {
+                        dot.classList.add('won');
+                    } else {
+                        dot.classList.add('used');
+                    }
+                }
+                
+                container.appendChild(dot);
+            }
+        }
+
+        function renderSettingsButtons() {
+            // Size buttons
+            const sizeContainer = document.getElementById('sizeButtons');
+            sizeContainer.innerHTML = '';
+            [3, 4, 5, 6].forEach(size => {
+                const btn = document.createElement('button');
+                btn.className = 'settings-btn';
+                if (state.gridSize === size) btn.classList.add('active');
+                btn.textContent = `${size}×6`;
+                btn.onclick = () => changeSize(size);
+                sizeContainer.appendChild(btn);
+            });
+
+            // Difficulty buttons
+            const diffContainer = document.getElementById('diffButtons');
+            diffContainer.innerHTML = '';
+            ['easy', 'medium', 'hard'].forEach(diff => {
+                const btn = document.createElement('button');
+                btn.className = 'diff-btn';
+                if (state.difficulty === diff) btn.classList.add('active');
+                
+                const emoji = diff === 'easy' ? '⭐' : diff === 'medium' ? '⚡' : '🏆';
+                const stats = state.stats[state.gridSize][diff];
+                
+                btn.innerHTML = `
+                    <span class="label">${emoji} ${diff.charAt(0).toUpperCase() + diff.slice(1)}</span>
+                    <span class="stats">${stats.won}/${stats.played} wins</span>
+                `;
+                btn.onclick = () => changeDifficulty(diff);
+                diffContainer.appendChild(btn);
+            });
+        }
+
+        function updateUI() {
+            // Badge updates
+            const diffBadge = document.getElementById('diffBadge');
+            diffBadge.textContent = state.difficulty.charAt(0).toUpperCase() + state.difficulty.slice(1);
+            diffBadge.className = `info-badge ${state.difficulty}`;
+
+            document.getElementById('sizeBadge').textContent = `${state.gridSize}×6`;
+            document.getElementById('streakBadge').textContent = `🔥 ${state.stats[state.gridSize][state.difficulty].streak}`;
+        }
+
+        // ============ GAME LOGIC ============
+        function getLetterStatus(letter, index, guess) {
+            if (state.targetWord[index] === letter) return 'correct';
+            if (state.targetWord.includes(letter)) return 'present';
+            return 'absent';
+        }
+
+        function getKeyStatus(letter) {
+            let status = null;
+            state.guesses.forEach(guess => {
+                guess.split('').forEach((l, i) => {
+                    if (l === letter) {
+                        if (state.targetWord[i] === letter) {
+                            status = 'correct';
+                        } else if (state.targetWord.includes(letter) && status !== 'correct') {
+                            status = 'present';
+                        } else if (!status) {
+                            status = 'absent';
+                        }
+                    }
+                });
+            });
+            return status;
+        }
+
+        function handleKey(key) {
+            if (state.gameStatus !== 'playing') return;
+
+            if (key === 'ENTER') {
+                submitGuess();
+            } else if (key === '⌫' || key === 'BACKSPACE') {
+                state.currentGuess = state.currentGuess.slice(0, -1);
+                updateGrid();
+            } else if (key.length === 1 && /[A-Z]/.test(key) && state.currentGuess.length < state.gridSize) {
+                state.currentGuess += key;
+                updateGrid();
+            }
+        }
+
+        function submitGuess() {
+            if (state.currentGuess.length !== state.gridSize) {
+                shakeCurrentRow();
+                showMessage(`Word must be ${state.gridSize} letters`);
+                return;
+            }
+
+            if (state.guesses.includes(state.currentGuess)) {
+                shakeCurrentRow();
+                showMessage('Already guessed!');
+                return;
+            }
+
+            state.guesses.push(state.currentGuess);
+
+            if (state.currentGuess === state.targetWord) {
+                state.gameStatus = 'won';
+                state.points = calculatePoints();
+                state.stats[state.gridSize][state.difficulty].played++;
+                state.stats[state.gridSize][state.difficulty].won++;
+                state.stats[state.gridSize][state.difficulty].streak++;
+                saveStats();
+                
+                setTimeout(() => showResult(true), 500);
+                
+                // Haptic feedback
+                if (window.Telegram?.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                }
+            } else if (state.guesses.length >= 6) {
+                state.gameStatus = 'lost';
+                state.stats[state.gridSize][state.difficulty].played++;
+                state.stats[state.gridSize][state.difficulty].streak = 0;
+                saveStats();
+                
+                setTimeout(() => showResult(false), 500);
+                
+                if (window.Telegram?.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('error');
+                }
+            }
+
+            state.currentGuess = '';
+            updateGrid();
+            updateKeyboard();
+            renderAttemptDots();
+            updateUI();
+        }
+
+        function calculatePoints() {
+            const base = { 3: { easy: 50, medium: 100, hard: 150 }, 4: { easy: 75, medium: 150, hard: 225 }, 5: { easy: 100, medium: 200, hard: 300 }, 6: { easy: 125, medium: 250, hard: 375 } };
+            return base[state.gridSize][state.difficulty] * (7 - state.guesses.length);
+        }
+
+        function shakeCurrentRow() {
+            const row = document.getElementById(`row-${state.guesses.length}`);
+            if (row) {
+                row.classList.add('shake');
+                setTimeout(() => row.classList.remove('shake'), 500);
+            }
+        }
+
+        function showMessage(text) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.classList.remove('hidden');
+            setTimeout(() => msg.classList.add('hidden'), 2000);
+        }
+
+        function showResult(won) {
+            const panel = document.getElementById('resultPanel');
+            document.getElementById('resultEmoji').textContent = won ? '🎉' : '😢';
+            document.getElementById('resultTitle').textContent = won ? 'Amazing!' : 'Game Over';
+            document.getElementById('resultTitle').className = `result-title ${won ? 'won' : 'lost'}`;
+            document.getElementById('resultText').textContent = won ? `You found the word in ${state.guesses.length} tries!` : 'The word was:';
+            
+            const wordEl = document.getElementById('resultWord');
+            if (!won) {
+                wordEl.textContent = state.targetWord;
+                wordEl.classList.remove('hidden');
+            } else {
+                wordEl.classList.add('hidden');
+            }
+            
+            document.getElementById('resultPoints').textContent = won ? `+${state.points} points` : '';
+            panel.classList.remove('hidden');
+        }
+
+        function resetGame() {
+            state.guesses = [];
+            state.currentGuess = '';
+            state.gameStatus = 'playing';
+            state.points = 0;
+            
+            document.getElementById('resultPanel').classList.add('hidden');
+            
+            selectNewWord();
+            renderGrid();
+            updateKeyboard();
+            renderAttemptDots();
+            updateUI();
+        }
+
+        function changeSize(size) {
+            state.gridSize = size;
+            resetGame();
+            renderSettingsButtons();
+            closeSettings();
+        }
+
+        function changeDifficulty(diff) {
+            state.difficulty = diff;
+            resetGame();
+            renderSettingsButtons();
+            closeSettings();
+        }
+
+        function shareResult() {
+            let grid = '';
+            state.guesses.forEach(guess => {
+                guess.split('').forEach((letter, i) => {
+                    const status = getLetterStatus(letter, i, guess);
+                    grid += status === 'correct' ? '🟦' : status === 'present' ? '🟨' : '⬜';
+                });
+                grid += '\n';
+            });
+
+            const text = `${state.gameStatus === 'won' ? '🎉' : '😢'} Wordle ${state.gridSize}×6 ${state.gameStatus === 'won' ? state.guesses.length + '/6' : 'X/6'}\n${state.difficulty}\n\n${grid}`;
+
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent('https://t.me/wordletgapp_bot/wordle')}&text=${encodeURIComponent(text)}`);
+            } else if (navigator.share) {
+                navigator.share({ text }).catch(() => copyText(text));
+            } else {
+                copyText(text);
+            }
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showMessage('📋 Copied!');
+            }).catch(() => {
+                showMessage('Could not copy');
+            });
+        }
+
+        // ============ MODALS ============
+        function toggleInstructions() {
+            document.getElementById('instructions').classList.toggle('hidden');
+        }
+
+        function openSettings() {
+            renderSettingsButtons();
+            document.getElementById('settingsModal').classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        // ============ EVENT LISTENERS ============
+        function setupEventListeners() {
+            document.getElementById('helpBtn').addEventListener('click', toggleInstructions);
+            document.getElementById('settingsBtn').addEventListener('click', openSettings);
+            document.getElementById('statsBtn').addEventListener('click', openSettings);
+
+            // Keyboard
+            document.addEventListener('keydown', (e) => {
+                if (state.gameStatus !== 'playing') return;
+                if (document.querySelector('.modal:not(.hidden)')) return;
+
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleKey('ENTER');
+                } else if (e.key === 'Backspace') {
+                    e.preventDefault();
+                    handleKey('BACKSPACE');
+                } else if (/^[a-zA-Z]$/.test(e.key)) {
+                    e.preventDefault();
+                    handleKey(e.key.toUpperCase());
+                }
+            });
+
+            // Close modal on backdrop click
+            document.getElementById('settingsModal').addEventListener('click', (e) => {
+                if (e.target.id === 'settingsModal') {
+                    closeSettings();
+                }
+            });
+        }
+
+        // ============ START ============
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
